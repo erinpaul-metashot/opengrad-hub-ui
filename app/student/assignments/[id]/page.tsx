@@ -13,7 +13,7 @@ export default function SubmitAssignmentPage({ params }: { params: Promise<{ id:
   
   const existingSubmission = assignment?.submissions?.[0];
   
-  const [textContent, setTextContent] = useState(existingSubmission?.notes || '');
+  const [textContent, setTextContent] = useState((existingSubmission as any)?.notes || '');
   const [files, setFiles] = useState<File[]>([]);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);

@@ -16,7 +16,7 @@ export default function QuizTakePage({ params }: QuizTakePageProps) {
   const quiz = mockQuizzes.find((q) => q.id === id) || mockGlobalQuizzes.find((q) => q.id === id);
   const course = quiz && 'courseId' in quiz ? mockCourses.find((c) => c.id === (quiz as any).courseId) : null;
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [answers, setAnswers] = useState<Record<number, string | number>>({});
+  const [answers, setAnswers] = useState<Record<string | number, string | number>>({});
   const [flagged, setFlagged] = useState<Set<number>>(new Set<number>());
   const [timeRemaining] = useState(quiz?.duration || 0);
   const [submitted, setSubmitted] = useState(false);

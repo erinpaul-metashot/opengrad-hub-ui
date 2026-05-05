@@ -101,7 +101,7 @@ export default function LessonPlayer({ params }: LessonPlayerProps) {
   // --- QUIZ STATE ---
   const quiz = lesson?.type === 'quiz' ? mockQuizzes.find((q) => q.id === lesson.quizId) as QuizRecord | undefined : undefined;
   const [currentQuestionIdx, setCurrentQuestionIdx] = useState(0);
-  const [quizAnswers, setQuizAnswers] = useState<Record<number, string | number>>({});
+  const [quizAnswers, setQuizAnswers] = useState<Record<string | number, string | number>>({});
   const [flaggedQuestions, setFlaggedQuestions] = useState<Set<number>>(new Set<number>());
   const [quizSubmitted, setQuizSubmitted] = useState(false);
 

@@ -22,14 +22,14 @@ import {
 import Link from 'next/link';
 
 // --- MOCK DATA ---
-const MOCK_QUESTION_BANK = [
+const MOCK_QUESTION_BANK: Question[] = [
   { id: 'qb1', title: 'What is the powerhouse of the cell?', type: 'MCQ', subject: 'Biology', difficulty: 'Easy', options: ['Mitochondria', 'Nucleus', 'Ribosome', 'Golgi Body'], correctOption: 0 },
   { id: 'qb2', title: 'Solve for x: 2x + 5 = 15', type: 'Numerical', subject: 'Mathematics', difficulty: 'Medium', answer: '5' },
   { id: 'qb3', title: 'Explain the concept of OOP.', type: 'Fill in the blanks', subject: 'Computer Science', difficulty: 'Hard' },
   { id: 'qb4', title: 'Which tag is used for a hyperlink?', type: 'MCQ', subject: 'Web Dev', difficulty: 'Easy', options: ['<a>', '<link>', '<href>', '<url>'], correctOption: 0 },
   { id: 'qb5', title: 'Calculate the derivative of x^2', type: 'Numerical', subject: 'Mathematics', difficulty: 'Medium', answer: '2x' },
   { id: 'qb6', title: 'Who wrote "Romeo and Juliet"?', type: 'MCQ', subject: 'Literature', difficulty: 'Easy', options: ['Charles Dickens', 'William Shakespeare', 'Jane Austen', 'Mark Twain'], correctOption: 1 },
-  { id: 'qb7', title: 'Reading Comprehension: Web Development', type: 'Group', subject: 'Web Dev', difficulty: 'Medium', passage: 'Web development is the work involved in developing a website...', subQuestions: [{ title: 'What is web dev?', type: 'MCQ', options: ['A', 'B', 'C', 'D'], correctOption: 0 }] },
+  { id: 'qb7', title: 'Reading Comprehension: Web Development', type: 'Group', subject: 'Web Dev', difficulty: 'Medium', passage: 'Web development is the work involved in developing a website...', subQuestions: [{ id: 'sq1', title: 'What is web dev?', type: 'MCQ', options: ['A', 'B', 'C', 'D'], correctOption: 0 }] },
 ];
 
 const MOCK_QUIZ_METADATA = {
@@ -44,6 +44,15 @@ const MOCK_QUIZ_METADATA = {
 // --- TYPES ---
 type QuestionType = 'MCQ' | 'Numerical' | 'Fill in the blanks' | 'Group';
 
+interface SubQuestion {
+  id: string | number;
+  title: string;
+  type: 'MCQ' | 'Numerical' | 'Fill' | string;
+  options?: string[];
+  correctOption?: number;
+  answer?: string;
+}
+
 interface Question {
   id: string;
   title: string;
@@ -55,7 +64,7 @@ interface Question {
   answer?: string;
   isCustom?: boolean;
   passage?: string;
-  subQuestions?: any[];
+  subQuestions?: SubQuestion[];
 }
 
 export default function QuizBuilderPage({ params }: { params: Promise<{ id: string }> }) {
@@ -420,7 +429,7 @@ function QuestionBankBrowser({ onAdd, existingIds }: { onAdd: (qs: Question[]) =
   const filteredBank = useMemo(() => {
     return MOCK_QUESTION_BANK.filter(q => 
       q.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      q.subject.toLowerCase().includes(searchTerm.toLowerCase())
+      (q.subject || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [searchTerm]);
 

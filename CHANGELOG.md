@@ -1,3 +1,5 @@
+2026-05-06 | agent:antigravity | FIX-DONE  | Fixed TypeScript build errors (MOCK_QUESTION_BANK types, notes property missing, implicitly any in map, index type errors) | files: app/manager/quizzes/[id]/builder/page.tsx, app/student/assignments/[id]/page.tsx, app/student/lessons/[id]/page.tsx, app/student/quizzes/[id]/take/page.tsx
+2026-05-06 | agent:antigravity | FIX-START | Fixing TypeScript build errors shown in builderror.log | files: app/manager/quizzes/[id]/builder/page.tsx, app/student/assignments/[id]/page.tsx, app/student/lessons/[id]/page.tsx, app/student/quizzes/[id]/take/page.tsx
 2026-05-05 | agent:antigravity | FIX-DONE  | Fixed hydration mismatch for date formatting in Reports pages | files: app/admin/reports/page.tsx, app/fellow/reports/page.tsx
 2026-05-05 | agent:antigravity | MOCK-DONE  | Fixed layout consistency for Reports pages to match portal standard | files: app/admin/reports/page.tsx, app/fellow/reports/page.tsx
 2026-05-05 | agent:antigravity | MOCK-START | Fixing layout consistency for Reports pages to match portal standard | files: app/admin/reports/page.tsx, app/fellow/reports/page.tsx

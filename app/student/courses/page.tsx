@@ -81,7 +81,7 @@ export default function StudentCoursesPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-3 text-slate-950">
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 text-slate-950">
               <div className="rounded-2xl bg-white/95 p-4 shadow-sm">
                 <p className="text-xs font-medium uppercase tracking-[0.25em] text-slate-500">Courses</p>
                 <p className="mt-2 text-3xl font-bold">{mockCourses.length}</p>

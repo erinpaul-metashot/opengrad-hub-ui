@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { Bell, LogOut, User, ChevronDown } from 'lucide-react';
+import { Bell, LogOut, User, ChevronDown, Menu } from 'lucide-react';
 import { mockNotifications } from '@/lib/mockData';
 
 interface HeaderProps {
@@ -12,6 +12,7 @@ interface HeaderProps {
   onSwitchRole?: (newRole: string) => void;
   onSignOut?: () => void;
   pageTitle?: string;
+  onMenuToggle?: () => void;
 }
 
 export default function Header({
@@ -21,6 +22,7 @@ export default function Header({
   onSwitchRole,
   onSignOut,
   pageTitle,
+  onMenuToggle,
 }: HeaderProps) {
   const [showUserMenu, setShowUserMenu] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
@@ -50,7 +52,14 @@ export default function Header({
     <header className="header-bar">
       {/* Left side - Page title */}
       <div className="header-left">
-        {pageTitle && <h1 className="header-title">{pageTitle}</h1>}
+        <button 
+          onClick={onMenuToggle}
+          className="md:hidden p-1.5 -ml-1 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors shrink-0"
+          aria-label="Toggle menu"
+        >
+          <Menu size={20} className="sm:w-[24px] sm:h-[24px]" />
+        </button>
+        {pageTitle && <h1 className="header-title truncate max-w-[120px] min-[375px]:max-w-[170px] sm:max-w-none">{pageTitle}</h1>}
       </div>
 
       {/* Right side - Role badge, Notifications, User menu */}
@@ -62,7 +71,13 @@ export default function Header({
             className={`role-badge ${getRoleBadgeColor(role)} flex items-center gap-1 cursor-pointer hover:opacity-90 transition-opacity`}
             aria-label="Switch role"
           >
-            {getRoleLabel(role)}
+            {role === 'admin' ? (
+              <span>
+                <span className="hidden sm:inline">Super </span>Admin
+              </span>
+            ) : (
+              getRoleLabel(role)
+            )}
             <ChevronDown size={14} className={`transition-transform duration-200 ${showRoleMenu ? 'rotate-180' : ''}`} />
           </button>
 
@@ -103,7 +118,7 @@ export default function Header({
 
           {/* Notifications Dropdown */}
           {showNotifications && (
-            <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-lg border border-gray-200 z-20">
+            <div className="fixed md:absolute left-4 right-4 md:left-auto md:right-0 top-16 md:top-auto mt-2 md:w-80 bg-white rounded-2xl md:rounded-lg shadow-xl border border-gray-200 z-50">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="font-semibold text-gray-900">Notifications</h3>
               </div>

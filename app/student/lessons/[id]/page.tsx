@@ -258,7 +258,7 @@ export default function LessonPlayer({ params }: LessonPlayerProps) {
               <div className="space-y-6">
                 {!quizSubmitted ? (
                   <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-                    <div className="lg:col-span-3 space-y-6">
+                    <div className="order-last lg:order-first lg:col-span-3 space-y-6">
                       <div className="bg-white rounded-3xl border border-slate-200 p-6 shadow-sm">
                         <div className="flex justify-between items-start mb-6">
                           <h2 className="text-xl font-bold text-slate-900">
@@ -408,7 +408,7 @@ export default function LessonPlayer({ params }: LessonPlayerProps) {
                       </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="order-first lg:order-last space-y-4">
                       <div className="bg-white rounded-3xl border border-slate-200 p-5 shadow-sm">
                         <div className="flex items-center gap-2 text-rose-600 font-bold mb-4">
                           <Clock size={20} />

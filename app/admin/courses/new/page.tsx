@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation';
 import LayoutShell from '@/components/LayoutShell';
 import { ChevronRight, Image as ImageIcon, Info } from 'lucide-react';
 import Link from 'next/link';
+import SubjectSelector from '@/components/SubjectSelector';
+
 
 export default function CreateCourseMetadata() {
   const router = useRouter();
@@ -13,6 +15,7 @@ export default function CreateCourseMetadata() {
   const [imageUrl, setImageUrl] = useState('');
   
   const [programmes, setProgrammes] = useState<string[]>([]);
+  const [subject, setSubject] = useState('');
 
   const handleProgrammeToggle = (prog: string) => {
     setProgrammes(prev => 
@@ -22,6 +25,10 @@ export default function CreateCourseMetadata() {
 
   const handleSaveAndNext = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!subject) {
+      alert('Please select or create a subject for the course.');
+      return;
+    }
     // Simulate save and redirect to curriculum builder
     // Hardcoded ID 1 for mock purposes
     router.push('/admin/courses/1/curriculum');
@@ -72,6 +79,16 @@ export default function CreateCourseMetadata() {
                   placeholder="Short summary of the course and learning outcomes."
                   className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 resize-y"
                 />
+              </div>
+
+              {/* Subject */}
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">Subject <span className="text-red-500">*</span></label>
+                <SubjectSelector 
+                  selectedSubject={subject}
+                  onChange={setSubject}
+                />
+                <p className="text-xs text-slate-500 mt-1">Select an existing subject or type to create a new one.</p>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -162,7 +179,7 @@ export default function CreateCourseMetadata() {
                 <label className="text-sm font-semibold text-slate-700 block">Programme type <span className="text-red-500">*</span></label>
                 <p className="text-xs text-slate-500 mb-2">Which student programmes should this course be available to?</p>
                 <div className="flex flex-wrap items-center gap-3">
-                  {['School', 'UG', 'PG'].map(prog => (
+                  {['Global', 'UG', 'PG'].map(prog => (
                     <label key={prog} className={`flex items-center gap-2 px-4 py-2 border rounded-xl cursor-pointer transition-colors ${programmes.includes(prog) ? 'bg-teal-50 border-teal-200' : 'bg-white border-slate-200 hover:bg-slate-50'}`}>
                       <input 
                         type="checkbox" 
@@ -199,47 +216,38 @@ export default function CreateCourseMetadata() {
                 </div>
               </div>
 
-              {/* Tags */}
-              <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Tags (optional)</label>
-                <input 
-                  type="text" 
-                  placeholder="e.g., math, programming, beginner"
-                  className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none transition focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
-                />
-                <p className="text-xs text-slate-500 mt-1">Comma separated list of tags for searchability.</p>
-              </div>
+
 
             </div>
 
-            <div className="pt-8 border-t border-slate-100 flex items-center justify-between">
+            <div className="pt-6 sm:pt-8 border-t border-slate-100 flex flex-col sm:flex-row gap-3 sm:items-center sm:justify-between">
               <button 
                 type="button"
-                className="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+                className="w-full sm:w-auto order-last sm:order-first px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-center"
                 onClick={() => router.push('/admin/courses')}
               >
                 Cancel
               </button>
               
-              <div className="flex items-center gap-3">
-                <div className="group relative">
+              <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto">
+                <div className="group relative w-full sm:w-auto">
                   <button 
                     type="button" 
                     disabled
-                    className="px-5 py-2.5 text-sm font-bold text-slate-400 bg-slate-100 rounded-xl cursor-not-allowed"
+                    className="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-slate-400 bg-slate-100 rounded-xl cursor-not-allowed text-center whitespace-nowrap"
                   >
                     Publish Course
                   </button>
-                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max p-2 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none">
+                  <div className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-max p-2 bg-slate-800 text-white text-xs rounded-lg opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all pointer-events-none z-10">
                     Publish after adding curriculum and at least one lesson
                   </div>
                 </div>
                 
                 <button 
                   type="submit"
-                  className="px-5 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-md shadow-teal-900/10 transition-all active:scale-95 flex items-center gap-2"
+                  className="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-md shadow-teal-900/10 transition-all active:scale-95 flex items-center justify-center gap-2"
                 >
-                  Save & Next <ChevronRight size={16} />
+                  Save & Next <ChevronRight size={14} className="sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>

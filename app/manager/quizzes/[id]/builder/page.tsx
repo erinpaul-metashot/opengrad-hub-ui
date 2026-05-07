@@ -20,6 +20,7 @@ import {
   AlertCircle
 } from 'lucide-react';
 import Link from 'next/link';
+import SubjectSelector from '@/components/SubjectSelector';
 
 // --- MOCK DATA ---
 const MOCK_QUESTION_BANK: Question[] = [
@@ -71,6 +72,14 @@ export default function QuizBuilderPage({ params }: { params: Promise<{ id: stri
   const unwrappedParams = React.use(params);
   const id = unwrappedParams.id;
 
+  const [questionBank, setQuestionBank] = useState<Question[]>(MOCK_QUESTION_BANK);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const showToast = (msg: string) => {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(null), 3000);
+  };
+
   const [questions, setQuestions] = useState<Question[]>([
     { ...MOCK_QUESTION_BANK[0], id: 'q1' },
     { ...MOCK_QUESTION_BANK[3], id: 'q2' }
@@ -114,6 +123,22 @@ export default function QuizBuilderPage({ params }: { params: Promise<{ id: stri
       setQuestions([...questions, newQuestion]);
     }
     setSlideOver({ isOpen: false, type: null });
+  };
+
+  const handleAddToBank = (qId: string) => {
+    const question = questions.find(q => q.id === qId);
+    if (!question) return;
+
+    const newBankId = `qb-${Date.now()}`;
+    const newBankQuestion: Question = {
+      ...question,
+      id: newBankId,
+      isCustom: false
+    };
+
+    setQuestionBank(prev => [...prev, newBankQuestion]);
+    setQuestions(prev => prev.map(q => q.id === qId ? { ...q, isCustom: false, id: newBankId } : q));
+    showToast(`Successfully added question to the Question Bank under subject "${question.subject || 'General'}"!`);
   };
 
   const handleDeleteQuestion = (qId: string) => {
@@ -205,7 +230,7 @@ export default function QuizBuilderPage({ params }: { params: Promise<{ id: stri
                         <GripVertical size={20} />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
+                        <div className="flex items-center gap-2 mb-1.5 flex-wrap">
                           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400 bg-slate-50 px-1.5 py-0.5 rounded border border-slate-100">
                             Q{index + 1}
                           </span>
@@ -214,9 +239,22 @@ export default function QuizBuilderPage({ params }: { params: Promise<{ id: stri
                           }`}>
                             {q.isCustom ? 'Custom' : 'Bank'}
                           </span>
+                          {q.subject && (
+                            <span className="text-[10px] font-bold uppercase tracking-wider text-slate-600 bg-slate-50 border border-slate-100 px-1.5 py-0.5 rounded">
+                              {q.subject}
+                            </span>
+                          )}
                           <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500 bg-slate-100 px-1.5 py-0.5 rounded">
                             {q.type}
                           </span>
+                          {q.isCustom && (
+                            <button
+                              onClick={() => handleAddToBank(q.id)}
+                              className="text-[10px] font-bold uppercase tracking-wider text-purple-600 hover:text-purple-700 bg-purple-50 hover:bg-purple-100 px-2 py-0.5 rounded border border-purple-200 transition-all flex items-center gap-1 active:scale-95 ml-auto sm:ml-0 shadow-sm shrink-0 font-extrabold"
+                            >
+                              <Database size={10} /> Add to Bank
+                            </button>
+                          )}
                         </div>
                         <h4 className="text-sm font-bold text-slate-900 leading-relaxed pr-20">{q.title}</h4>
                         {q.type === 'MCQ' && q.options && (
@@ -251,7 +289,7 @@ export default function QuizBuilderPage({ params }: { params: Promise<{ id: stri
                       </div>
                     </div>
 
-                    <div className="absolute top-4 right-4 flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm rounded-lg p-1 border border-slate-100">
+                    <div className="absolute top-4 right-4 flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity bg-white/80 backdrop-blur-sm rounded-lg p-1 border border-slate-100">
                       <button 
                         onClick={() => handleEditQuestion(q)}
                         className="p-1.5 text-slate-400 hover:text-purple-600 hover:bg-purple-50 rounded-lg transition-colors"
@@ -368,6 +406,7 @@ export default function QuizBuilderPage({ params }: { params: Promise<{ id: stri
             <div className="flex-1 overflow-y-auto bg-slate-50/30">
               {slideOver.type === 'Bank' && (
                 <QuestionBankBrowser 
+                  questionBank={questionBank}
                   onAdd={handleAddFromBank} 
                   existingIds={questions.filter(q => !q.isCustom).map(q => q.id)}
                 />
@@ -416,22 +455,29 @@ export default function QuizBuilderPage({ params }: { params: Promise<{ id: stri
           </div>
         </div>
       )}
+
+      {toastMessage && (
+        <div className="fixed bottom-6 right-6 z-[100] bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center gap-2.5 animate-in fade-in slide-in-from-bottom duration-300 border border-slate-800">
+          <CheckCircle2 size={18} className="text-emerald-400" />
+          <span className="text-sm font-bold">{toastMessage}</span>
+        </div>
+      )}
     </LayoutShell>
   );
 }
 
 // --- SUB-COMPONENTS ---
 
-function QuestionBankBrowser({ onAdd, existingIds }: { onAdd: (qs: Question[]) => void, existingIds: string[] }) {
+function QuestionBankBrowser({ questionBank, onAdd, existingIds }: { questionBank: Question[], onAdd: (qs: Question[]) => void, existingIds: string[] }) {
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   
   const filteredBank = useMemo(() => {
-    return MOCK_QUESTION_BANK.filter(q => 
+    return questionBank.filter(q => 
       q.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
       (q.subject || '').toLowerCase().includes(searchTerm.toLowerCase())
     );
-  }, [searchTerm]);
+  }, [searchTerm, questionBank]);
 
   const toggleSelect = (id: string) => {
     setSelectedIds(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
@@ -502,7 +548,7 @@ function QuestionBankBrowser({ onAdd, existingIds }: { onAdd: (qs: Question[]) =
         <div className="flex gap-2">
           <button 
             disabled={selectedIds.length === 0}
-            onClick={() => onAdd(MOCK_QUESTION_BANK.filter(q => selectedIds.includes(q.id)) as any)}
+            onClick={() => onAdd(questionBank.filter(q => selectedIds.includes(q.id)) as any)}
             className="px-6 py-2.5 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl transition-all shadow-lg shadow-teal-900/10 disabled:opacity-50 active:scale-95 flex items-center gap-2"
           >
             Add to Quiz <Plus size={16} />
@@ -550,16 +596,17 @@ function QuestionEditor({ initialData, onSave, onCancel }: { initialData?: Quest
           ></textarea>
         </div>
         
-        <div className="grid grid-cols-2 gap-4">
+        <div className="space-y-4 bg-slate-50/50 p-5 rounded-2xl border border-slate-100">
           <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Type</label>
-            <div className="flex gap-1 p-1 bg-slate-100 rounded-xl border border-slate-200">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Type</label>
+            <div className="flex gap-1 p-1 bg-white rounded-xl border border-slate-200 shadow-sm">
               {['MCQ', 'Numerical', 'Fill in the blanks', 'Group'].map(t => (
                 <button 
                   key={t}
+                  type="button"
                   onClick={() => handleUpdate({ type: t as any })}
                   className={`flex-1 py-2 text-[10px] font-bold uppercase tracking-wider rounded-lg transition-all ${
-                    formData.type === t ? 'bg-white text-purple-600 shadow-sm' : 'text-slate-500 hover:text-slate-700'
+                    formData.type === t ? 'bg-purple-600 text-white shadow-sm shadow-purple-950/20' : 'text-slate-500 hover:text-slate-700'
                   }`}
                 >
                   {t}
@@ -567,17 +614,27 @@ function QuestionEditor({ initialData, onSave, onCancel }: { initialData?: Quest
               ))}
             </div>
           </div>
-          <div className="space-y-2">
-            <label className="text-sm font-semibold text-slate-700">Difficulty</label>
-            <select 
-              value={formData.difficulty}
-              onChange={(e) => handleUpdate({ difficulty: e.target.value })}
-              className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-purple-500 transition-all bg-white"
-            >
-              <option>Easy</option>
-              <option>Medium</option>
-              <option>Hard</option>
-            </select>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Subject <span className="text-red-500">*</span></label>
+              <SubjectSelector
+                selectedSubject={formData.subject || ''}
+                onChange={(subj) => handleUpdate({ subject: subj })}
+              />
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-bold text-slate-500 uppercase tracking-wider">Difficulty</label>
+              <select 
+                value={formData.difficulty || 'Medium'}
+                onChange={(e) => handleUpdate({ difficulty: e.target.value })}
+                className="w-full rounded-xl border border-slate-200 px-4 py-2.5 text-sm text-slate-900 outline-none focus:border-purple-500 transition-all bg-white font-semibold"
+              >
+                <option>Easy</option>
+                <option>Medium</option>
+                <option>Hard</option>
+              </select>
+            </div>
           </div>
         </div>
 

@@ -83,23 +83,23 @@ export default function AdminUserManagement() {
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
-            <button className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50">
-              <Download size={16} />
+          <div className="flex flex-wrap items-center gap-2 w-full sm:w-auto">
+            <button className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 whitespace-nowrap">
+              <Download size={14} className="sm:w-4 sm:h-4" />
               Export CSV
             </button>
             <button 
               onClick={() => setShowImportModal(true)}
-              className="flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 rounded-xl border border-slate-200 bg-white px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold text-slate-700 shadow-sm transition hover:bg-slate-50 whitespace-nowrap"
             >
-              <Upload size={16} />
+              <Upload size={14} className="sm:w-4 sm:h-4" />
               Bulk Import
             </button>
             <button 
               onClick={() => setShowCreateModal(true)}
-              className="flex items-center gap-2 rounded-xl bg-teal-600 px-4 py-2.5 text-sm font-bold text-white shadow-md shadow-teal-900/10 transition hover:bg-teal-700 active:scale-95"
+              className="flex-1 sm:flex-initial flex items-center justify-center gap-1.5 rounded-xl bg-teal-600 px-3 sm:px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white shadow-md shadow-teal-900/10 transition hover:bg-teal-700 active:scale-95 whitespace-nowrap"
             >
-              <Plus size={16} />
+              <Plus size={14} className="sm:w-4 sm:h-4" />
               Create User
             </button>
           </div>
@@ -118,7 +118,7 @@ export default function AdminUserManagement() {
             />
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex flex-wrap items-center gap-3">
             <select 
               value={roleFilter}
               onChange={(e) => setRoleFilter(e.target.value)}
@@ -180,7 +180,7 @@ export default function AdminUserManagement() {
                         </span>
                       </td>
                       <td className="p-4 pr-6">
-                        <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <div className="flex items-center justify-end gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                           <button 
                             onClick={() => setEditUserId(user.id)}
                             className="p-2 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors" 
@@ -214,7 +214,7 @@ export default function AdminUserManagement() {
           </div>
 
           {/* Pagination */}
-          <div className="border-t border-slate-100 px-6 py-4 flex items-center justify-between bg-slate-50/50">
+          <div className="border-t border-slate-100 px-6 py-4 flex flex-col sm:flex-row items-center justify-between gap-4 bg-slate-50/50">
             <div className="flex items-center gap-2 text-sm text-slate-600">
               <span>Show</span>
               <select className="border border-slate-200 rounded-lg px-2 py-1 outline-none">

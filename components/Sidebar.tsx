@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ChevronDown, LogOut } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { ChevronDown, LogOut, X } from 'lucide-react';
 
 interface NavItemProps {
   icon: React.ReactNode;
@@ -18,6 +19,8 @@ interface SidebarProps {
   role?: 'student' | 'manager' | 'fellow' | 'admin';
   activeItem?: string;
   onSignOut?: () => void;
+  isOpen?: boolean;
+  onClose?: () => void;
 }
 
 const NAV_ITEMS: Record<string, NavItemProps[]> = {
@@ -60,7 +63,20 @@ const NAV_ITEMS: Record<string, NavItemProps[]> = {
   admin: [
     { icon: '', label: 'Dashboard', href: '/admin/dashboard' },
     { icon: '', label: 'Users', href: '/admin/users' },
-    { icon: '', label: 'Courses', href: '/admin/courses' },
+    {
+      icon: '',
+      label: 'Courses',
+      href: '/admin/courses',
+      children: [
+        { icon: '', label: 'Create Course', href: '/admin/courses/new' },
+        {
+          icon: '',
+          label: 'Manage Courses',
+          href: '/admin/courses',
+        },
+        { icon: '', label: 'Assign Course', href: '/admin/courses/assign' },
+      ],
+    },
     { icon: '', label: 'Reports', href: '/admin/reports' },
     { icon: '', label: 'Analytics', href: '/admin/analytics' },
   ],
@@ -76,9 +92,41 @@ export default function Sidebar({
   role = 'student',
   activeItem,
   onSignOut,
+  isOpen = false,
+  onClose,
 }: SidebarProps) {
   const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const pathname = usePathname();
   const navItems = NAV_ITEMS[role] || NAV_ITEMS.student;
+
+  // Auto-expand parents of active children
+  useEffect(() => {
+    if (!pathname) return;
+    
+    const itemsToExpand: string[] = [];
+    navItems.forEach((item) => {
+      if (item.children) {
+        const hasActiveChild = item.children.some(
+          (child) => child.href && (pathname === child.href || pathname.startsWith(child.href + '/'))
+        );
+        if (hasActiveChild) {
+          itemsToExpand.push(item.label);
+        }
+      }
+    });
+
+    if (itemsToExpand.length > 0) {
+      setExpandedItems((prev) => {
+        const newExpanded = [...prev];
+        itemsToExpand.forEach((label) => {
+          if (!newExpanded.includes(label)) {
+            newExpanded.push(label);
+          }
+        });
+        return newExpanded;
+      });
+    }
+  }, [pathname, navItems]);
 
   const toggleExpand = (label: string) => {
     setExpandedItems((prev) =>
@@ -91,7 +139,45 @@ export default function Sidebar({
   const renderNavItem = (item: NavItemProps, depth = 0) => {
     const isExpanded = expandedItems.includes(item.label);
     const hasChildren = item.children && item.children.length > 0;
-    const isActive = activeItem === item.label;
+    
+    // Determine if the current item is active based on pathname
+    let isExactActive = false;
+    if (item.href) {
+      if (pathname === item.href) {
+        isExactActive = true;
+      } else if (pathname.startsWith(item.href + '/')) {
+        // Exclude specific siblings to avoid collision (e.g. '/manager/courses/new' starts with '/manager/courses')
+        const isSiblingCollision =
+          (item.href === '/manager/courses' || item.href === '/admin/courses') &&
+          (pathname === `${item.href}/new` ||
+            pathname.startsWith(`${item.href}/new/`) ||
+            pathname === `${item.href}/assign` ||
+            pathname.startsWith(`${item.href}/assign/`));
+
+        if (!isSiblingCollision) {
+          isExactActive = true;
+        }
+      }
+    }
+
+    // Determine if any child of this item is active
+    const hasActiveChild = item.children && item.children.some((child) => {
+      if (!child.href) return false;
+      if (pathname === child.href) return true;
+      if (pathname.startsWith(child.href + '/')) {
+        const isSiblingCollision =
+          (child.href === '/manager/courses' || child.href === '/admin/courses') &&
+          (pathname === `${child.href}/new` ||
+            pathname.startsWith(`${child.href}/new/`) ||
+            pathname === `${child.href}/assign` ||
+            pathname.startsWith(`${child.href}/assign/`));
+        return !isSiblingCollision;
+      }
+      return false;
+    });
+
+    // activeItem prop-based active or exact path active (excluding parents when child is active)
+    const isActive = activeItem === item.label || (isExactActive && !hasActiveChild) || (depth > 0 && isExactActive);
 
     const itemContent = (
       <div
@@ -102,6 +188,9 @@ export default function Sidebar({
           if (hasChildren) {
             e.preventDefault();
             toggleExpand(item.label);
+          } else if (onClose && window.innerWidth < 768) {
+            // Close sidebar on mobile when navigating
+            onClose();
           }
         }}
       >
@@ -139,9 +228,9 @@ export default function Sidebar({
   };
 
   return (
-    <aside className="sidebar">
+    <aside className={`sidebar ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
       {/* Logo Section */}
-      <div className="sidebar-logo">
+      <div className="sidebar-logo relative">
         <Link href="/">
           <div className="flex justify-center py-2">
             <Image 
@@ -154,6 +243,15 @@ export default function Sidebar({
             />
           </div>
         </Link>
+        {onClose && (
+          <button 
+            onClick={onClose}
+            className="absolute right-4 top-1/2 -translate-y-1/2 md:hidden p-1 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+            aria-label="Close sidebar"
+          >
+            <X size={20} />
+          </button>
+        )}
       </div>
 
       {/* Navigation */}

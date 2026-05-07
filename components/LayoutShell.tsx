@@ -29,6 +29,7 @@ export default function LayoutShell({
   const [currentRole, setCurrentRole] = useState<
     'student' | 'manager' | 'fellow' | 'admin'
   >(role);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const router = useRouter();
 
   const handleRoleSwitch = (newRole: string) => {
@@ -64,12 +65,22 @@ export default function LayoutShell({
   };
 
   return (
-    <div className="layout-shell">
+    <div className="layout-shell relative">
+      {/* Mobile Sidebar Backdrop */}
+      {isMobileSidebarOpen && (
+        <div 
+          className="fixed inset-0 bg-slate-900/50 z-30 md:hidden transition-opacity backdrop-blur-sm"
+          onClick={() => setIsMobileSidebarOpen(false)}
+        />
+      )}
+
       {/* Sidebar */}
       <Sidebar
         role={currentRole}
         activeItem={activeNavItem || pageTitle}
         onSignOut={handleSignOut}
+        isOpen={isMobileSidebarOpen}
+        onClose={() => setIsMobileSidebarOpen(false)}
       />
 
       {/* Main Content Area */}
@@ -82,6 +93,7 @@ export default function LayoutShell({
           unreadNotifications={unreadNotifications}
           onSignOut={handleSignOut}
           onSwitchRole={handleRoleSwitch}
+          onMenuToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         />
 
         {/* Page Content */}

@@ -207,7 +207,7 @@ export default function SubmitAssignmentPage({ params }: { params: Promise<{ id:
                         onChange={handleFileChange}
                         className="absolute inset-0 w-full h-full opacity-0 cursor-pointer z-10"
                       />
-                      <div className="border-2 border-dashed border-slate-200 rounded-[2rem] p-10 flex flex-col items-center justify-center transition group-hover:border-teal-400 group-hover:bg-teal-50/30">
+                      <div className="border-2 border-dashed border-slate-200 rounded-[2rem] p-6 sm:p-10 flex flex-col items-center justify-center transition group-hover:border-teal-400 group-hover:bg-teal-50/30">
                         <div className="w-16 h-16 bg-slate-50 text-slate-400 rounded-2xl flex items-center justify-center mb-4 transition group-hover:text-teal-500 group-hover:bg-white group-hover:shadow-sm">
                           <Upload size={28} />
                         </div>

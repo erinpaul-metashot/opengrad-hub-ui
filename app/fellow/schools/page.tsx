@@ -45,7 +45,7 @@ export default function FellowSchools() {
         {filteredSchools.map((school) => (
           <Link href={`/fellow/schools/${school.id}`} key={school.id}>
             <div className="group bg-white rounded-[1.5rem] border border-slate-200 shadow-sm hover:shadow-md hover:border-teal-200 transition-all overflow-hidden h-full flex flex-col cursor-pointer">
-              <div className="p-6 flex-1 flex flex-col">
+              <div className="p-5 sm:p-6 flex-1 flex flex-col">
                 <div className="flex justify-between items-start mb-4">
                   <div className="bg-teal-50 p-3 rounded-xl text-teal-600">
                     <MapPin size={24} />
@@ -77,7 +77,7 @@ export default function FellowSchools() {
                 </div>
               </div>
 
-              <div className="bg-slate-50 px-6 py-4 border-t border-slate-100 flex items-center justify-between mt-auto">
+              <div className="bg-slate-50 px-5 sm:px-6 py-4 border-t border-slate-100 flex items-center justify-between mt-auto">
                 <div>
                   <p className="text-xs font-medium text-slate-500 uppercase tracking-wider mb-1">Avg Progress</p>
                   <div className="flex items-center gap-2">

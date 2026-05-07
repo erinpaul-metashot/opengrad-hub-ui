@@ -40,7 +40,7 @@
   }
 
   .sidebar {
-    @apply w-64 bg-white border-r border-gray-200 flex flex-col fixed h-full shadow-sm;
+    @apply w-64 bg-white border-r border-gray-200 flex flex-col fixed h-full shadow-sm z-40 transition-transform duration-300;
   }
 
   .sidebar-logo {
@@ -117,47 +117,47 @@
   }
 
   .main-content {
-    @apply ml-64 flex flex-col flex-1 overflow-hidden;
+    @apply ml-0 md:ml-64 flex flex-col flex-1 overflow-hidden min-w-0 transition-all duration-300;
   }
 
   .header-bar {
-    @apply h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6 shadow-sm;
+    @apply h-16 bg-white border-b border-gray-200 flex items-center justify-between px-3 sm:px-6 shadow-sm;
   }
 
   .header-left {
-    @apply flex items-center gap-4;
+    @apply flex items-center gap-1.5 sm:gap-4 min-w-0 flex-1;
   }
 
   .header-title {
-    @apply text-lg font-semibold text-gray-900;
+    @apply text-sm sm:text-lg font-semibold text-gray-900 truncate;
   }
 
   .header-right {
-    @apply flex items-center gap-4;
+    @apply flex items-center gap-1.5 sm:gap-4 shrink-0;
   }
 
   .role-badge {
-    @apply inline-flex items-center px-3 py-1.5 text-xs font-bold text-white rounded-full;
+    @apply inline-flex items-center px-2 py-1 text-[10px] sm:text-xs font-bold text-white rounded-full sm:px-3 sm:py-1.5;
   }
 
   .notification-bell {
-    @apply relative cursor-pointer p-2 hover:bg-gray-100 rounded-lg transition-colors duration-150;
+    @apply relative cursor-pointer p-1.5 sm:p-2 hover:bg-gray-100 rounded-lg transition-colors duration-150 shrink-0;
   }
 
   .notification-badge {
-    @apply absolute top-1 right-1 w-2 h-2 bg-red-600 rounded-full;
+    @apply absolute top-0.5 right-0.5 w-1.5 h-1.5 sm:top-1 sm:right-1 sm:w-2 sm:h-2 bg-red-600 rounded-full;
   }
 
   .user-avatar {
-    @apply w-10 h-10 rounded-full bg-teal-600 text-white flex items-center justify-center cursor-pointer font-bold text-sm hover:bg-teal-700 transition-colors duration-150;
+    @apply w-8 h-8 sm:w-10 sm:h-10 rounded-full bg-teal-600 text-white flex items-center justify-center cursor-pointer font-bold text-xs sm:text-sm hover:bg-teal-700 transition-colors duration-150 shrink-0;
   }
 
   .page-content {
-    @apply flex-1 overflow-y-auto bg-gray-50 p-6;
+    @apply flex-1 overflow-y-auto bg-gray-50 p-6 min-w-0;
   }
 
   .content-container {
-    @apply max-w-7xl mx-auto;
+    @apply max-w-7xl mx-auto w-full;
   }
 }
 

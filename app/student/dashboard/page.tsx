@@ -125,7 +125,7 @@ export default function StudentDashboard() {
                           </span>
                         </div>
                       </div>
-                      <button className="px-5 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-md shadow-teal-900/10 transition-all active:scale-95">
+                      <button className="px-5 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-md shadow-teal-900/10 transition-all active:scale-95 w-full sm:w-auto">
                         Continue
                       </button>
                     </div>

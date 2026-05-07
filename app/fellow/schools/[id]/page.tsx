@@ -38,7 +38,7 @@ export default function FellowSchoolDetails() {
           <ChevronLeft size={20} />
         </button>
         <div>
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-3 items-start">
             <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-slate-900">
               {school.name}
             </h1>
@@ -48,49 +48,49 @@ export default function FellowSchoolDetails() {
               {school.status}
             </span>
           </div>
-          <p className="text-sm text-slate-500 mt-1 flex items-center gap-4">
-            <span className="flex items-center"><MapPin size={14} className="mr-1" /> {school.district}</span>
-            <span className="flex items-center"><Mail size={14} className="mr-1" /> {school.contactEmail}</span>
+          <p className="text-sm text-slate-500 mt-2 flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
+            <span className="flex items-center"><MapPin size={14} className="mr-1 shrink-0" /> {school.district}</span>
+            <span className="flex items-center"><Mail size={14} className="mr-1 shrink-0" /> {school.contactEmail}</span>
           </p>
         </div>
       </div>
 
       {/* Metrics Row */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-teal-50 p-3 rounded-xl text-teal-600">
-            <Users size={24} />
+        <div className="bg-white p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600 shrink-0">
+            <Users size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Total Enrolled</p>
-            <p className="text-xl font-bold text-slate-900 mt-1">{school.studentsCount}</p>
+          <div className="w-full flex-1 min-w-0">
+            <p className="text-lg sm:text-xl font-black text-slate-900 leading-tight">{school.studentsCount}</p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5 truncate">Total Enrolled</p>
           </div>
         </div>
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-indigo-50 p-3 rounded-xl text-indigo-600">
-            <BookOpen size={24} />
+        <div className="bg-white p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+            <BookOpen size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Avg Progress</p>
-            <p className="text-xl font-bold text-slate-900 mt-1">{school.averageProgress}%</p>
+          <div className="w-full flex-1 min-w-0">
+            <p className="text-lg sm:text-xl font-black text-slate-900 leading-tight">{school.averageProgress}%</p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5 truncate">Avg Progress</p>
           </div>
         </div>
         {/* Placeholder for more metrics */}
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-amber-50 p-3 rounded-xl text-amber-600">
-            <BookOpen size={24} />
+        <div className="bg-white p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+            <BookOpen size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Active Courses</p>
-            <p className="text-xl font-bold text-slate-900 mt-1">12</p>
+          <div className="w-full flex-1 min-w-0">
+            <p className="text-lg sm:text-xl font-black text-slate-900 leading-tight">12</p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5 truncate">Active Courses</p>
           </div>
         </div>
       </div>
 
       {/* Students List */}
       <div className="bg-white border border-slate-200 shadow-sm rounded-xl overflow-hidden">
-        <div className="px-6 py-5 border-b border-slate-100 flex items-center justify-between">
-          <h3 className="font-bold text-lg text-slate-900">Students in this School</h3>
+        <div className="px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-100 flex items-center justify-between">
+           <h3 className="font-bold text-lg text-slate-900">Students in this School</h3>
         </div>
         <div className="overflow-x-auto">
           <table className="w-full text-left text-sm whitespace-nowrap">

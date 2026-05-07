@@ -75,9 +75,9 @@ export default function CalendarPage() {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2 bg-white rounded-[2rem] shadow-sm ring-1 ring-slate-200 overflow-hidden">
-            <div className="flex justify-between items-center px-6 py-5 border-b border-slate-100">
-              <h3 className="text-xl font-bold text-slate-900">{calendarMonthFormatter.format(currentDate)}</h3>
-              <div className="flex items-center gap-2">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 px-6 py-5 border-b border-slate-100">
+              <h3 className="text-xl font-bold text-slate-900 text-center sm:text-left">{calendarMonthFormatter.format(currentDate)}</h3>
+              <div className="flex items-center justify-center sm:justify-end gap-2">
                 <button
                   onClick={() => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1))}
                   className="p-2 rounded-xl border border-slate-200 hover:bg-slate-50 transition text-slate-600"
@@ -99,8 +99,8 @@ export default function CalendarPage() {
               </div>
             </div>
 
-            <div className="p-4 sm:p-6">
-              <div className="grid grid-cols-7 gap-px bg-slate-200 rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
+            <div className="p-4 sm:p-6 overflow-x-auto">
+              <div className="min-w-[700px] grid grid-cols-7 gap-px bg-slate-200 rounded-2xl overflow-hidden border border-slate-200 shadow-inner">
                 {['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'].map(d => (
                   <div key={d} className="bg-slate-50 text-center font-bold text-[10px] uppercase tracking-[0.2em] text-slate-500 py-4">
                     {d}

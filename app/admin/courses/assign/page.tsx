@@ -22,9 +22,12 @@ const MOCK_USERS = [
 ];
 
 const MOCK_COURSES = [
-  { id: 1, title: 'Web Development Fundamentals', prog: 'UG', modules: 12, status: 'Active' },
-  { id: 2, title: 'Basic Mathematics for CompSci', prog: 'School', modules: 8, status: 'Active' },
-  { id: 3, title: 'Advanced React Patterns', prog: 'PG', modules: 15, status: 'Active' },
+  { id: 1, title: 'Web Development Fundamentals', prog: 'UG', subject: 'Computer Science', accessType: 'Free', modules: 12, status: 'Active' },
+  { id: 2, title: 'Basic Mathematics for CompSci', prog: 'Global', subject: 'Math', accessType: 'Free', modules: 8, status: 'Active' },
+  { id: 3, title: 'Advanced React Patterns', prog: 'PG', subject: 'Computer Science', accessType: 'Paid', modules: 15, status: 'Active' },
+  { id: 4, title: 'Database Systems', prog: 'UG', subject: 'Computer Science', accessType: 'Paid', modules: 10, status: 'Active' },
+  { id: 5, title: 'Intro to Python', prog: 'Global', subject: 'Computer Science', accessType: 'Free', modules: 6, status: 'Active' },
+  { id: 6, title: 'Intro to Biology', prog: 'Global', subject: 'Biology', accessType: 'Free', modules: 8, status: 'Active' },
 ];
 
 export default function CourseAssignPage() {
@@ -33,10 +36,26 @@ export default function CourseAssignPage() {
   const [selectedCourseIds, setSelectedCourseIds] = useState<number[]>([]);
   const [showConfirmModal, setShowConfirmModal] = useState(false);
   
-  // Filter states
+  // User Filter states
   const [searchQuery, setSearchQuery] = useState('');
   const [progFilters, setProgFilters] = useState<string[]>([]);
   const [stateFilter, setStateFilter] = useState('All States');
+
+  // Course Filter states
+  const [courseSearchQuery, setCourseSearchQuery] = useState('');
+  const [courseSubjectFilter, setCourseSubjectFilter] = useState('All Subjects');
+  const [courseAccessFilter, setCourseAccessFilter] = useState('All');
+  const [courseProgFilter, setCourseProgFilter] = useState('All');
+
+  const filteredCourses = useMemo(() => {
+    return MOCK_COURSES.filter(course => {
+      const matchesSearch = course.title.toLowerCase().includes(courseSearchQuery.toLowerCase());
+      const matchesSubject = courseSubjectFilter === 'All Subjects' || course.subject === courseSubjectFilter;
+      const matchesAccess = courseAccessFilter === 'All' || course.accessType === courseAccessFilter;
+      const matchesProg = courseProgFilter === 'All' || course.prog === courseProgFilter;
+      return matchesSearch && matchesSubject && matchesAccess && matchesProg;
+    });
+  }, [courseSearchQuery, courseSubjectFilter, courseAccessFilter, courseProgFilter]);
 
   const filteredUsers = useMemo(() => {
     return MOCK_USERS.filter(user => {
@@ -89,20 +108,22 @@ export default function CourseAssignPage() {
             <ChevronRight size={14} />
             <span className="text-slate-900 font-semibold">Assign</span>
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
               <h1 className="text-2xl font-bold text-slate-900">Assign Courses</h1>
-              <p className="text-sm text-slate-500 mt-1">Step {step} of 2 — {step === 1 ? 'Select users to assign' : 'Select courses to assign'}</p>
+              <p className="text-sm text-slate-500 mt-1">Step {step} of 2 — {step === 1 ? 'Select users' : 'Select courses'}</p>
             </div>
             
             {/* Progress Pills */}
-            <div className="flex items-center gap-2">
-              <div className={`px-4 py-2 rounded-full text-xs font-bold transition-colors ${step === 1 ? 'bg-teal-600 text-white shadow-md' : 'bg-teal-50 text-teal-700'}`}>
-                1. Select Users
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs font-bold transition-colors ${step === 1 ? 'bg-teal-600 text-white shadow-md' : 'bg-teal-50 text-teal-700'}`}>
+                <span className="sm:hidden">1. Users</span>
+                <span className="hidden sm:inline">1. Select Users</span>
               </div>
-              <div className={`w-8 h-px bg-slate-300`}></div>
-              <div className={`px-4 py-2 rounded-full text-xs font-bold transition-colors ${step === 2 ? 'bg-teal-600 text-white shadow-md' : 'bg-slate-100 text-slate-400'}`}>
-                2. Select Courses
+              <div className="w-4 sm:w-8 h-px bg-slate-300 shrink-0"></div>
+              <div className={`px-3 sm:px-4 py-1.5 sm:py-2 rounded-full text-[10px] sm:text-xs font-bold transition-colors ${step === 2 ? 'bg-teal-600 text-white shadow-md' : 'bg-slate-100 text-slate-400'}`}>
+                <span className="sm:hidden">2. Courses</span>
+                <span className="hidden sm:inline">2. Select Courses</span>
               </div>
             </div>
           </div>
@@ -219,9 +240,9 @@ export default function CourseAssignPage() {
                 <button 
                   disabled={selectedUserIds.length === 0}
                   onClick={() => setStep(2)}
-                  className="px-6 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 transition-all disabled:opacity-50 disabled:hover:bg-teal-600 flex items-center gap-2"
+                  className="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 transition-all disabled:opacity-50 disabled:hover:bg-teal-600 flex items-center justify-center gap-2"
                 >
-                  Next Step <ChevronRight size={16} />
+                  Next Step <ChevronRight size={14} className="sm:w-4 sm:h-4" />
                 </button>
               </div>
             </div>
@@ -233,17 +254,62 @@ export default function CourseAssignPage() {
             <div className="w-full lg:w-64 shrink-0 space-y-6">
               <div className="bg-white p-5 rounded-2xl shadow-sm border border-slate-200 space-y-4">
                 <h3 className="font-bold text-slate-900 flex items-center gap-2">
-                  <BookOpen size={16} className="text-teal-600" /> Assignment Options
+                  <Filter size={16} className="text-teal-600" /> Course Filters
                 </h3>
                 
+                {/* Subject Filter */}
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Start Date (Optional)</label>
-                  <input type="date" className="w-full text-sm rounded-lg border border-slate-200 p-2 outline-none focus:border-teal-500 text-slate-700" />
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Subject</label>
+                  <select 
+                    value={courseSubjectFilter}
+                    onChange={(e) => setCourseSubjectFilter(e.target.value)}
+                    className="w-full text-sm rounded-lg border border-slate-200 p-2 outline-none focus:border-teal-500 bg-slate-50 text-slate-700"
+                  >
+                    <option>All Subjects</option>
+                    <option>Computer Science</option>
+                    <option>Math</option>
+                    <option>Biology</option>
+                  </select>
                 </div>
                 
+                {/* Access Filter */}
                 <div className="space-y-2">
-                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Access Until (Optional)</label>
-                  <input type="date" className="w-full text-sm rounded-lg border border-slate-200 p-2 outline-none focus:border-teal-500 text-slate-700" />
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Access Type</label>
+                  <div className="space-y-2">
+                    {['All', 'Free', 'Paid'].map(type => (
+                      <label key={type} className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="radio" 
+                          name="courseAccess" 
+                          value={type}
+                          checked={courseAccessFilter === type}
+                          onChange={() => setCourseAccessFilter(type)}
+                          className="w-4 h-4 text-teal-600 border-slate-300" 
+                        />
+                        <span className="text-sm text-slate-700">{type}</span>
+                      </label>
+                    ))}
+                  </div>
+                </div>
+
+                {/* Accessible to (Programme) */}
+                <div className="space-y-2">
+                  <label className="text-xs font-semibold text-slate-500 uppercase tracking-wider">Accessible to</label>
+                  <div className="space-y-2">
+                    {['All', 'UG', 'PG', 'Global'].map(p => (
+                      <label key={p} className="flex items-center gap-2 cursor-pointer">
+                        <input 
+                          type="radio" 
+                          name="courseProg" 
+                          value={p}
+                          checked={courseProgFilter === p}
+                          onChange={() => setCourseProgFilter(p)}
+                          className="w-4 h-4 text-teal-600 border-slate-300" 
+                        />
+                        <span className="text-sm text-slate-700">{p}</span>
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
             </div>
@@ -256,46 +322,62 @@ export default function CourseAssignPage() {
                 </p>
                 <div className="relative w-64">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14} />
-                  <input type="text" placeholder="Search courses..." className="w-full text-sm rounded-lg border border-slate-200 py-1.5 pl-8 pr-3 outline-none" />
+                  <input 
+                    type="text" 
+                    value={courseSearchQuery}
+                    onChange={(e) => setCourseSearchQuery(e.target.value)}
+                    placeholder="Search courses by title..." 
+                    className="w-full text-sm rounded-lg border border-slate-200 py-1.5 pl-8 pr-3 outline-none focus:border-teal-500" 
+                  />
                 </div>
               </div>
 
-              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 flex-1">
-                {MOCK_COURSES.map(course => {
-                  const isSelected = selectedCourseIds.includes(course.id);
-                  return (
-                    <div 
-                      key={course.id}
-                      onClick={() => toggleCourse(course.id)}
-                      className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all ${isSelected ? 'border-teal-500 bg-teal-50/20' : 'border-slate-200 hover:border-slate-300 bg-white'}`}
-                    >
-                      <div className="absolute top-4 right-4 text-slate-400">
-                        {isSelected ? <CheckSquare size={20} className="text-teal-600" /> : <Square size={20} />}
-                      </div>
-                      <div className="pr-8">
-                        <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">{course.prog}</span>
-                        <h4 className="font-bold text-slate-900 mt-1 mb-2 line-clamp-2">{course.title}</h4>
-                        <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
-                          <span className="flex items-center gap-1"><BookOpen size={12} /> {course.modules} modules</span>
-                          <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[10px] uppercase">Active</span>
+              <div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4 flex-1 overflow-y-auto max-h-[400px]">
+                {filteredCourses.length > 0 ? (
+                  filteredCourses.map(course => {
+                    const isSelected = selectedCourseIds.includes(course.id);
+                    return (
+                      <div 
+                        key={course.id}
+                        onClick={() => toggleCourse(course.id)}
+                        className={`relative p-4 rounded-xl border-2 cursor-pointer transition-all ${isSelected ? 'border-teal-500 bg-teal-50/20' : 'border-slate-200 hover:border-slate-300 bg-white'}`}
+                      >
+                        <div className="absolute top-4 right-4 text-slate-400">
+                          {isSelected ? <CheckSquare size={20} className="text-teal-600" /> : <Square size={20} />}
+                        </div>
+                        <div className="pr-8">
+                          <div className="flex flex-wrap items-center gap-1.5 mb-1.5">
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-slate-100 text-slate-600 rounded">{course.prog}</span>
+                            <span className="text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 bg-teal-50 text-teal-700 rounded">{course.subject}</span>
+                            <span className={`text-[10px] font-bold uppercase tracking-wider px-1.5 py-0.5 rounded ${course.accessType === 'Free' ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>{course.accessType}</span>
+                          </div>
+                          <h4 className="font-bold text-slate-900 mt-1 mb-2 line-clamp-2">{course.title}</h4>
+                          <div className="flex items-center gap-3 text-xs text-slate-500 font-medium">
+                            <span className="flex items-center gap-1"><BookOpen size={12} /> {course.modules} modules</span>
+                            <span className="flex items-center gap-1 px-1.5 py-0.5 bg-emerald-50 text-emerald-700 rounded text-[10px] uppercase">{course.status}</span>
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  );
-                })}
+                    );
+                  })
+                ) : (
+                  <div className="col-span-1 md:col-span-2 p-8 text-center text-slate-500 font-medium bg-slate-50/50 rounded-xl border border-dashed border-slate-200 flex items-center justify-center">
+                    No courses match your active filters.
+                  </div>
+                )}
               </div>
 
-              <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex items-center justify-between">
+              <div className="p-4 border-t border-slate-100 bg-slate-50/50 flex flex-col sm:flex-row gap-2.5 sm:items-center sm:justify-between">
                 <button 
                   onClick={() => setStep(1)}
-                  className="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors"
+                  className="w-full sm:w-auto order-last sm:order-first px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-slate-600 bg-white border border-slate-200 rounded-xl hover:bg-slate-50 transition-colors text-center"
                 >
                   Back
                 </button>
                 <button 
                   disabled={selectedCourseIds.length === 0}
                   onClick={() => setShowConfirmModal(true)}
-                  className="px-6 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 transition-all disabled:opacity-50 disabled:hover:bg-teal-600"
+                  className="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 transition-all disabled:opacity-50 disabled:hover:bg-teal-600 text-center flex items-center justify-center"
                 >
                   Review & Assign
                 </button>

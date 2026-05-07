@@ -16,9 +16,12 @@ import {
   Video,
   BookOpen,
   Image as ImageIcon,
-  Info
+  Info,
+  Database
 } from 'lucide-react';
 import Link from 'next/link';
+import SubjectSelector from '@/components/SubjectSelector';
+
 
 // --- MOCK TYPES ---
 type LessonType = 'Video' | 'Quiz';
@@ -66,7 +69,8 @@ export default function CurriculumBuilderPage({ params }: { params: Promise<{ id
     access: 'Paid',
     price: '4999',
     locking: 'Sequential',
-    imageUrl: ''
+    imageUrl: '',
+    subject: 'Math'
   });
 
   // --- HANDLERS ---
@@ -164,18 +168,18 @@ export default function CurriculumBuilderPage({ params }: { params: Promise<{ id
             <p className="text-sm text-slate-500 mt-1">Curriculum Builder — Add modules and lessons to your course.</p>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 w-full sm:w-auto">
             <button 
               onClick={() => setSlideOverState({ isOpen: true, type: 'Metadata', chapterId: null })}
-              className="px-4 py-2.5 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl transition-colors border border-slate-200 shadow-sm flex items-center gap-2"
+              className="w-full sm:w-auto px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl transition-colors border border-slate-200 shadow-sm flex items-center justify-center gap-1.5"
             >
-              <Edit2 size={16} />
+              <Edit2 size={14} className="sm:w-4 sm:h-4" />
               Edit Details
             </button>
             <button 
               disabled={chapters.length === 0 || chapters.every(c => c.lessons.length === 0)}
               onClick={() => setShowPublishModal(true)}
-              className="px-5 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-md shadow-teal-900/10 transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100"
+              className="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-md shadow-teal-900/10 transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 text-center flex items-center justify-center"
             >
               Publish Course
             </button>
@@ -202,17 +206,21 @@ export default function CurriculumBuilderPage({ params }: { params: Promise<{ id
             chapters.map((chapter, index) => (
               <div key={chapter.id} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300">
                 {/* Chapter Header */}
-                <div className="flex items-center gap-3 px-4 py-4 bg-slate-50 border-b border-slate-100 group">
-                  <div className="cursor-grab p-1 text-slate-400 hover:text-slate-600 active:cursor-grabbing">
+                <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-4 bg-slate-50 border-b border-slate-100 group">
+                  <div className="cursor-grab p-1 text-slate-400 hover:text-slate-600 active:cursor-grabbing shrink-0">
                     <GripVertical size={18} />
                   </div>
-                  <div className="flex-1 flex items-center gap-3 cursor-pointer" onClick={() => toggleChapter(chapter.id)}>
-                    <ChevronRight size={18} className={`text-slate-400 transition-transform ${chapter.isExpanded ? 'rotate-90' : ''}`} />
-                    <span className="font-semibold text-slate-700 uppercase tracking-wider text-xs">Chapter {index + 1}</span>
-                    <h3 className="font-bold text-slate-900">{chapter.title}</h3>
-                    <span className="text-xs text-slate-400 font-medium ml-2 px-2 py-0.5 bg-slate-200/50 rounded-full">{chapter.lessons.length} lessons</span>
+                  <div className="flex-1 flex gap-2 sm:gap-3 cursor-pointer min-w-0" onClick={() => toggleChapter(chapter.id)}>
+                    <ChevronRight size={18} className={`text-slate-400 shrink-0 transition-transform mt-0.5 sm:mt-0 ${chapter.isExpanded ? 'rotate-90' : ''}`} />
+                    <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 min-w-0">
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="font-semibold text-slate-700 uppercase tracking-wider text-[10px] sm:text-xs">Chapter {index + 1}</span>
+                        <span className="text-[10px] sm:text-xs text-slate-400 font-medium px-2 py-0.5 bg-slate-200/50 rounded-full">{chapter.lessons.length} lessons</span>
+                      </div>
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900 break-words min-w-0 leading-tight">{chapter.title}</h3>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-0.5 sm:gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
                     <button 
                       onClick={(e) => { e.stopPropagation(); handleEditChapter(chapter); }}
                       className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
@@ -252,7 +260,7 @@ export default function CurriculumBuilderPage({ params }: { params: Promise<{ id
                               {lesson.questionCount && <span>• {lesson.questionCount} questions</span>}
                             </p>
                           </div>
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                           <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
                             <button 
                               onClick={() => handleEditLesson(chapter.id, lesson)}
                               className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
@@ -489,9 +497,19 @@ function VideoLessonEditor({ initialData, onSave, onCancel }: { initialData?: Le
 
 function QuizLessonEditor({ initialData, onSave, onCancel }: { initialData?: Lesson, onSave: (lesson: Partial<Lesson>) => void, onCancel: () => void }) {
   const [title, setTitle] = useState(initialData?.title || '');
-  const [questions, setQuestions] = useState(initialData?.questionCount 
-    ? Array.from({ length: initialData.questionCount }, (_, i) => ({ id: i + 1, type: 'MCQ', text: '', options: ['', '', '', ''], correctOption: 0, answer: '' })) 
-    : [{ id: 1, type: 'MCQ', text: '', options: ['', '', '', ''], correctOption: 0, answer: '' }]);
+  const [questions, setQuestions] = useState<any[]>(initialData?.questionCount 
+    ? Array.from({ length: initialData.questionCount }, (_, i) => ({ id: i + 1, type: 'MCQ', text: '', options: ['', '', '', ''], correctOption: 0, answer: '', subject: 'General', difficulty: 'Medium' })) 
+    : [{ id: 1, type: 'MCQ', text: '', options: ['', '', '', ''], correctOption: 0, answer: '', subject: 'General', difficulty: 'Medium' }]);
+
+  const [addedToBank, setAddedToBank] = useState<Record<number, boolean>>({});
+
+  const handleAddToBank = (q: any) => {
+    if (!q.text.trim()) {
+      alert('Please enter some question text before exporting to the bank.');
+      return;
+    }
+    setAddedToBank(prev => ({ ...prev, [q.id]: true }));
+  };
 
   const updateQuestionType = (id: number, type: string) => {
     setQuestions(prev => prev.map(q => q.id === id ? { ...q, type } : q));
@@ -499,6 +517,10 @@ function QuizLessonEditor({ initialData, onSave, onCancel }: { initialData?: Les
 
   const updateQuestionText = (id: number, text: string) => {
     setQuestions(prev => prev.map(q => q.id === id ? { ...q, text } : q));
+  };
+
+  const updateQuestionField = (id: number, field: string, value: any) => {
+    setQuestions(prev => prev.map(q => q.id === id ? { ...q, [field]: value } : q));
   };
 
   const updateOption = (qId: number, optIdx: number, val: string) => {
@@ -555,12 +577,26 @@ function QuizLessonEditor({ initialData, onSave, onCancel }: { initialData?: Les
         
         {questions.map((q, idx) => (
           <div key={q.id} className="bg-slate-50 border border-slate-200 rounded-2xl p-5 space-y-4">
-            <div className="flex items-center justify-between">
+            <div className="flex items-center justify-between flex-wrap gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-teal-600 px-2 py-1 bg-teal-50 rounded-lg">Question {idx + 1}</span>
-              <div className="flex gap-2">
+              <div className="flex flex-wrap items-center gap-1.5 sm:gap-2 justify-end">
+                <button 
+                  type="button" 
+                  onClick={() => handleAddToBank(q)}
+                  disabled={addedToBank[q.id]}
+                  className={`flex items-center gap-1 sm:gap-1.5 px-2 sm:px-3 py-1 sm:py-1.5 rounded-lg sm:rounded-xl text-[10px] sm:text-xs font-bold border transition-all active:scale-95 ${
+                    addedToBank[q.id] 
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-700 cursor-default active:scale-100' 
+                      : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50'
+                  }`}
+                >
+                  <Database size={10} className={`${addedToBank[q.id] ? 'text-emerald-600 animate-pulse' : 'text-slate-400'} sm:w-3 sm:h-3`} />
+                  {addedToBank[q.id] ? 'Exported' : 'Add to Bank'}
+                </button>
+
                 <select 
                   value={q.type} onChange={(e) => updateQuestionType(q.id, e.target.value)}
-                  className="text-xs font-semibold rounded-lg border border-slate-200 px-2 py-1 outline-none text-slate-700 bg-white"
+                  className="text-[10px] sm:text-xs font-semibold rounded-lg border border-slate-200 px-1.5 sm:px-2 py-1 sm:py-1.5 outline-none text-slate-700 bg-white"
                 >
                   <option value="MCQ">MCQ</option>
                   <option value="Fill in Blank">Fill in Blank</option>
@@ -574,6 +610,28 @@ function QuizLessonEditor({ initialData, onSave, onCancel }: { initialData?: Les
             </div>
 
             <div className="space-y-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 bg-white p-4 rounded-xl border border-slate-100 shadow-sm">
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Subject <span className="text-red-500">*</span></label>
+                  <SubjectSelector
+                    selectedSubject={q.subject || ''}
+                    onChange={(subj) => updateQuestionField(q.id, 'subject', subj)}
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">Difficulty</label>
+                  <select
+                    value={q.difficulty || 'Medium'}
+                    onChange={(e) => updateQuestionField(q.id, 'difficulty', e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-3 py-2.5 text-xs text-slate-900 outline-none focus:border-teal-500 bg-white font-semibold"
+                  >
+                    <option>Easy</option>
+                    <option>Medium</option>
+                    <option>Hard</option>
+                  </select>
+                </div>
+              </div>
+
               <div className="space-y-2">
                 <label className="text-xs font-semibold text-slate-600 uppercase tracking-tight">Question Text</label>
                 <textarea 
@@ -588,7 +646,7 @@ function QuizLessonEditor({ initialData, onSave, onCancel }: { initialData?: Les
                 {q.type === 'MCQ' && (
                   <div className="space-y-3">
                     <p className="text-xs font-semibold text-slate-600">Options (Select the correct one)</p>
-                    {q.options?.map((opt, oIdx) => (
+                    {q.options?.map((opt: string, oIdx: number) => (
                       <div key={oIdx} className="flex items-center gap-3">
                         <input 
                           type="radio" name={`q${q.id}_correct`} 
@@ -648,7 +706,7 @@ function QuizLessonEditor({ initialData, onSave, onCancel }: { initialData?: Les
 
         <button 
           type="button" 
-          onClick={() => setQuestions([...questions, { id: Date.now(), type: 'MCQ', text: '', options: ['', '', '', ''], correctOption: 0, answer: '' }])}
+          onClick={() => setQuestions([...questions, { id: Date.now(), type: 'MCQ', text: '', options: ['', '', '', ''], correctOption: 0, answer: '', subject: 'General', difficulty: 'Medium' }])}
           className="w-full py-3 flex items-center justify-center gap-2 text-sm font-bold text-teal-700 bg-teal-50 hover:bg-teal-100 rounded-xl border border-teal-200 transition-colors"
         >
           <Plus size={16} /> Add Question
@@ -696,7 +754,7 @@ function CourseMetadataEditor({ initialData, onSave, onCancel }: { initialData: 
   const [formData, setFormData] = useState({
     ...initialData,
     currency: 'INR',
-    tags: 'math, foundation, competitive'
+    subject: initialData.subject || 'Math'
   });
 
   const handleProgrammeToggle = (prog: string) => {
@@ -723,6 +781,14 @@ function CourseMetadataEditor({ initialData, onSave, onCancel }: { initialData: 
           <textarea 
             required rows={4} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})}
             className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-500 resize-y"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-700">Subject <span className="text-red-500">*</span></label>
+          <SubjectSelector 
+            selectedSubject={formData.subject}
+            onChange={(val) => setFormData({...formData, subject: val})}
           />
         </div>
 
@@ -778,7 +844,7 @@ function CourseMetadataEditor({ initialData, onSave, onCancel }: { initialData: 
         <div className="space-y-3">
           <label className="text-sm font-semibold text-slate-700 block">Programme type</label>
           <div className="flex flex-wrap gap-3">
-            {['School', 'UG', 'PG'].map(prog => (
+            {['Global', 'UG', 'PG'].map(prog => (
               <label key={prog} className={`flex items-center gap-2 px-4 py-2 border rounded-xl cursor-pointer transition-colors ${formData.programme.includes(prog) ? 'bg-teal-50 border-teal-200 text-teal-800' : 'bg-white border-slate-200 text-slate-600'}`}>
                 <input 
                   type="checkbox" checked={formData.programme.includes(prog)}
@@ -805,14 +871,7 @@ function CourseMetadataEditor({ initialData, onSave, onCancel }: { initialData: 
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-700">Tags</label>
-          <input 
-            type="text" value={formData.tags} onChange={(e) => setFormData({...formData, tags: e.target.value})}
-            placeholder="e.g., math, beginner"
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-500"
-          />
-        </div>
+
       </div>
 
       <div className="pt-6 border-t border-slate-100 flex items-center justify-end gap-3 sticky bottom-0 bg-white pb-4 z-10">

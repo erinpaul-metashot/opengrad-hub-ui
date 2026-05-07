@@ -70,14 +70,14 @@ export default function ReportsPage() {
   return (
     <div className="space-y-6">
       {/* Header Section */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900">Fellow Reports</h1>
           <p className="text-slate-500 text-sm mt-1">Manage and track concerns regarding students and schools</p>
         </div>
         <button 
           onClick={() => setIsModalOpen(true)}
-          className="flex items-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-5 py-2.5 rounded-xl font-medium transition-all shadow-sm shadow-emerald-200"
+          className="flex items-center justify-center gap-2 bg-emerald-600 hover:bg-emerald-700 text-white px-4 py-2.5 sm:px-5 sm:py-2.5 rounded-xl text-sm sm:text-base font-medium transition-all shadow-sm shadow-emerald-200 w-full sm:w-auto shrink-0"
         >
           <Plus size={18} />
           Create New Report
@@ -85,36 +85,38 @@ export default function ReportsPage() {
       </div>
 
       {/* Stats Summary */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
-            <MessageSquare size={24} />
+      <div className="grid grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6">
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between gap-3 hover:scale-[1.01] transition-all">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600 shrink-0">
+            <MessageSquare size={20} className="sm:w-6 sm:h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500">Total Reports</p>
-            <p className="text-2xl font-bold text-slate-900">{mockReports.length}</p>
+            <p className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">{mockReports.length}</p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5">Total Reports</p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600">
-            <Clock size={24} />
+
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between gap-3 hover:scale-[1.01] transition-all">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+            <Clock size={20} className="sm:w-6 sm:h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500">Active Reports</p>
-            <p className="text-2xl font-bold text-slate-900">
+            <p className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
               {mockReports.filter(r => r.status === 'Reported').length}
             </p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5">Active Reports</p>
           </div>
         </div>
-        <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
-            <CheckCircle2 size={24} />
+
+        <div className="bg-white p-4 sm:p-6 rounded-2xl border border-slate-200 shadow-sm flex flex-col justify-between gap-3 hover:scale-[1.01] transition-all col-span-2 md:col-span-1">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+            <CheckCircle2 size={20} className="sm:w-6 sm:h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-slate-500">Resolved</p>
-            <p className="text-2xl font-bold text-slate-900">
+            <p className="text-xl sm:text-2xl font-black text-slate-900 leading-tight">
               {mockReports.filter(r => r.status === 'Resolved').length}
             </p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5">Resolved</p>
           </div>
         </div>
       </div>
@@ -126,7 +128,7 @@ export default function ReportsPage() {
             <button
               key={t}
               onClick={() => setFilter(t as any)}
-              className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
+              className={`flex-1 md:flex-none px-6 py-2 rounded-lg text-sm font-medium transition-all text-center ${
                 filter === t 
                   ? 'bg-slate-900 text-white shadow-md shadow-slate-200' 
                   : 'text-slate-600 hover:bg-slate-50'

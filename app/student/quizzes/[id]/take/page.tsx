@@ -79,7 +79,7 @@ export default function QuizTakePage({ params }: QuizTakePageProps) {
       <div className="max-w-6xl">
         {!submitted ? (
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
-            <div className="lg:col-span-3 space-y-6">
+            <div className="order-last lg:order-first lg:col-span-3 space-y-6">
               <div className="bg-white rounded-lg shadow-sm p-6">
                 <div className="flex justify-between items-start mb-4">
                   <h2 className="text-2xl font-bold text-gray-900">Question {currentQuestion + 1} of {quiz.questions.length}</h2>
@@ -207,7 +207,7 @@ export default function QuizTakePage({ params }: QuizTakePageProps) {
               </div>
             </div>
 
-            <div className="bg-white rounded-lg shadow-sm p-6 h-fit">
+            <div className="order-first lg:order-last bg-white rounded-lg shadow-sm p-6 h-fit">
               <div className="flex items-center gap-2 text-red-600 font-bold mb-4">
                 <Clock size={20} /> {Math.floor(timeRemaining / 60)}:{String(timeRemaining % 60).padStart(2, '0')}
               </div>

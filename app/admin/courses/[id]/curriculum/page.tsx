@@ -19,6 +19,8 @@ import {
   Info
 } from 'lucide-react';
 import Link from 'next/link';
+import SubjectSelector from '@/components/SubjectSelector';
+
 
 // --- MOCK TYPES ---
 type LessonType = 'Video' | 'Quiz';
@@ -66,7 +68,8 @@ export default function CurriculumBuilderPage({ params }: { params: Promise<{ id
     access: 'Paid',
     price: '4999',
     locking: 'Sequential',
-    imageUrl: ''
+    imageUrl: '',
+    subject: 'Math'
   });
 
   // --- HANDLERS ---
@@ -164,18 +167,18 @@ export default function CurriculumBuilderPage({ params }: { params: Promise<{ id
             <p className="text-sm text-slate-500 mt-1">Curriculum Builder — Add modules and lessons to your course.</p>
           </div>
           
-          <div className="flex items-center gap-3">
+          <div className="flex flex-col sm:flex-row gap-2.5 sm:gap-3 w-full sm:w-auto">
             <button 
               onClick={() => setSlideOverState({ isOpen: true, type: 'Metadata', chapterId: null })}
-              className="px-4 py-2.5 text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl transition-colors border border-slate-200 shadow-sm flex items-center gap-2"
+              className="w-full sm:w-auto px-4 py-2 sm:py-2.5 text-xs sm:text-sm font-semibold text-slate-600 bg-white hover:bg-slate-50 rounded-xl transition-colors border border-slate-200 shadow-sm flex items-center justify-center gap-1.5"
             >
-              <Edit2 size={16} />
+              <Edit2 size={14} className="sm:w-4 sm:h-4" />
               Edit Details
             </button>
             <button 
               disabled={chapters.length === 0 || chapters.every(c => c.lessons.length === 0)}
               onClick={() => setShowPublishModal(true)}
-              className="px-5 py-2.5 text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-md shadow-teal-900/10 transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100"
+              className="w-full sm:w-auto px-4 sm:px-5 py-2 sm:py-2.5 text-xs sm:text-sm font-bold text-white bg-teal-600 rounded-xl hover:bg-teal-700 shadow-md shadow-teal-900/10 transition-all active:scale-95 disabled:opacity-50 disabled:active:scale-100 text-center flex items-center justify-center"
             >
               Publish Course
             </button>
@@ -202,17 +205,21 @@ export default function CurriculumBuilderPage({ params }: { params: Promise<{ id
             chapters.map((chapter, index) => (
               <div key={chapter.id} className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all duration-300">
                 {/* Chapter Header */}
-                <div className="flex items-center gap-3 px-4 py-4 bg-slate-50 border-b border-slate-100 group">
-                  <div className="cursor-grab p-1 text-slate-400 hover:text-slate-600 active:cursor-grabbing">
+                <div className="flex items-center gap-2 sm:gap-3 px-3 sm:px-4 py-4 bg-slate-50 border-b border-slate-100 group">
+                  <div className="cursor-grab p-1 text-slate-400 hover:text-slate-600 active:cursor-grabbing shrink-0">
                     <GripVertical size={18} />
                   </div>
-                  <div className="flex-1 flex items-center gap-3 cursor-pointer" onClick={() => toggleChapter(chapter.id)}>
-                    <ChevronRight size={18} className={`text-slate-400 transition-transform ${chapter.isExpanded ? 'rotate-90' : ''}`} />
-                    <span className="font-semibold text-slate-700 uppercase tracking-wider text-xs">Chapter {index + 1}</span>
-                    <h3 className="font-bold text-slate-900">{chapter.title}</h3>
-                    <span className="text-xs text-slate-400 font-medium ml-2 px-2 py-0.5 bg-slate-200/50 rounded-full">{chapter.lessons.length} lessons</span>
+                  <div className="flex-1 flex gap-2 sm:gap-3 cursor-pointer min-w-0" onClick={() => toggleChapter(chapter.id)}>
+                    <ChevronRight size={18} className={`text-slate-400 shrink-0 transition-transform mt-0.5 sm:mt-0 ${chapter.isExpanded ? 'rotate-90' : ''}`} />
+                    <div className="flex-1 flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-3 min-w-0">
+                      <div className="flex items-center gap-2 shrink-0">
+                        <span className="font-semibold text-slate-700 uppercase tracking-wider text-[10px] sm:text-xs">Chapter {index + 1}</span>
+                        <span className="text-[10px] sm:text-xs text-slate-400 font-medium px-2 py-0.5 bg-slate-200/50 rounded-full">{chapter.lessons.length} lessons</span>
+                      </div>
+                      <h3 className="text-sm sm:text-base font-bold text-slate-900 break-words min-w-0 leading-tight">{chapter.title}</h3>
+                    </div>
                   </div>
-                  <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                  <div className="flex items-center gap-0.5 sm:gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
                     <button 
                       onClick={(e) => { e.stopPropagation(); handleEditChapter(chapter); }}
                       className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
@@ -252,7 +259,7 @@ export default function CurriculumBuilderPage({ params }: { params: Promise<{ id
                               {lesson.questionCount && <span>• {lesson.questionCount} questions</span>}
                             </p>
                           </div>
-                          <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                           <div className="flex items-center gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity shrink-0">
                             <button 
                               onClick={() => handleEditLesson(chapter.id, lesson)}
                               className="p-1.5 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
@@ -681,7 +688,7 @@ function CourseMetadataEditor({ initialData, onSave, onCancel }: { initialData: 
   const [formData, setFormData] = useState({
     ...initialData,
     currency: 'INR',
-    tags: 'math, foundation, competitive'
+    subject: initialData.subject || 'Math'
   });
 
   const handleProgrammeToggle = (prog: string) => {
@@ -708,6 +715,14 @@ function CourseMetadataEditor({ initialData, onSave, onCancel }: { initialData: 
           <textarea 
             required rows={4} value={formData.description} onChange={(e) => setFormData({...formData, description: e.target.value})}
             className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-500 resize-y"
+          />
+        </div>
+
+        <div className="space-y-2">
+          <label className="text-sm font-semibold text-slate-700">Subject <span className="text-red-500">*</span></label>
+          <SubjectSelector 
+            selectedSubject={formData.subject}
+            onChange={(val) => setFormData({...formData, subject: val})}
           />
         </div>
 
@@ -763,7 +778,7 @@ function CourseMetadataEditor({ initialData, onSave, onCancel }: { initialData: 
         <div className="space-y-3">
           <label className="text-sm font-semibold text-slate-700 block">Programme type</label>
           <div className="flex flex-wrap gap-3">
-            {['School', 'UG', 'PG'].map(prog => (
+            {['Global', 'UG', 'PG'].map(prog => (
               <label key={prog} className={`flex items-center gap-2 px-4 py-2 border rounded-xl cursor-pointer transition-colors ${formData.programme.includes(prog) ? 'bg-teal-50 border-teal-200 text-teal-800' : 'bg-white border-slate-200 text-slate-600'}`}>
                 <input 
                   type="checkbox" checked={formData.programme.includes(prog)}
@@ -790,14 +805,7 @@ function CourseMetadataEditor({ initialData, onSave, onCancel }: { initialData: 
           </div>
         </div>
 
-        <div className="space-y-2">
-          <label className="text-sm font-semibold text-slate-700">Tags</label>
-          <input 
-            type="text" value={formData.tags} onChange={(e) => setFormData({...formData, tags: e.target.value})}
-            placeholder="e.g., math, beginner"
-            className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm outline-none focus:border-teal-500"
-          />
-        </div>
+
       </div>
 
       <div className="pt-6 border-t border-slate-100 flex items-center justify-end gap-3 sticky bottom-0 bg-white pb-4 z-10">

@@ -59,51 +59,49 @@ export default function FellowStudentDetails() {
 
       {/* Overview Statistics */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-teal-50 p-3 rounded-xl text-teal-600">
-            <BarChart size={24} />
+        <div className="bg-white p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-teal-50 flex items-center justify-center text-teal-600 shrink-0">
+            <BarChart size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div className="w-full">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Overall Progress</p>
-            <div className="flex items-center gap-2 mt-1">
-              <div className="flex-1 bg-slate-100 rounded-full h-1.5 overflow-hidden">
-                <div
-                  className="bg-teal-500 h-1.5 rounded-full"
-                  style={{ width: `${student.progress}%` }}
-                />
-              </div>
-              <p className="text-lg font-bold text-slate-900">{student.progress}%</p>
+          <div className="w-full min-w-0">
+            <span className="text-lg sm:text-xl font-black text-slate-900 leading-tight">{student.progress}%</span>
+            <div className="bg-slate-100 rounded-full h-1.5 overflow-hidden mt-1.5 mb-1">
+              <div
+                className="bg-teal-500 h-1.5 rounded-full"
+                style={{ width: `${student.progress}%` }}
+              />
             </div>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 truncate mt-1">Overall Progress</p>
           </div>
         </div>
         
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-indigo-50 p-3 rounded-xl text-indigo-600">
-            <Clock size={24} />
+        <div className="bg-white p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-indigo-50 flex items-center justify-center text-indigo-600 shrink-0">
+            <Clock size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Attendance</p>
-            <p className="text-xl font-bold text-slate-900 mt-1">{student.statistics.attendance}</p>
-          </div>
-        </div>
-
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-amber-50 p-3 rounded-xl text-amber-600">
-            <BookOpen size={24} />
-          </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Assignments Done</p>
-            <p className="text-xl font-bold text-slate-900 mt-1">{student.statistics.assignmentsCompleted}</p>
+          <div className="w-full min-w-0">
+            <p className="text-lg sm:text-xl font-black text-slate-900 leading-tight">{student.statistics.attendance}</p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5 truncate">Attendance</p>
           </div>
         </div>
 
-        <div className="bg-white p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex items-center gap-4">
-          <div className="bg-emerald-50 p-3 rounded-xl text-emerald-600">
-            <GraduationCap size={24} />
+        <div className="bg-white p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-amber-50 flex items-center justify-center text-amber-600 shrink-0">
+            <BookOpen size={20} className="sm:w-6 sm:h-6" />
           </div>
-          <div>
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-500">Avg Grade</p>
-            <p className="text-xl font-bold text-slate-900 mt-1">{student.statistics.averageGrade}%</p>
+          <div className="w-full min-w-0">
+            <p className="text-lg sm:text-xl font-black text-slate-900 leading-tight">{student.statistics.assignmentsCompleted}</p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5 truncate">Assignments Done</p>
+          </div>
+        </div>
+
+        <div className="bg-white p-4 sm:p-5 rounded-[1.5rem] border border-slate-200 shadow-sm flex flex-col justify-between gap-3">
+          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0">
+            <GraduationCap size={20} className="sm:w-6 sm:h-6" />
+          </div>
+          <div className="w-full min-w-0">
+            <p className="text-lg sm:text-xl font-black text-slate-900 leading-tight">{student.statistics.averageGrade}%</p>
+            <p className="text-[10px] sm:text-xs font-bold uppercase tracking-wider text-slate-500 mt-0.5 truncate">Avg Grade</p>
           </div>
         </div>
       </div>
@@ -114,10 +112,10 @@ export default function FellowStudentDetails() {
           <h2 className="text-xl font-bold text-slate-900">Enrolled Courses</h2>
           <div className="bg-white rounded-[1.5rem] border border-slate-200 shadow-sm divide-y divide-slate-100">
             {student.courses.map((course, idx) => (
-              <div key={idx} className="p-6">
-                <div className="flex items-start justify-between">
+              <div key={idx} className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                   <div className="flex items-start gap-4">
-                    <div className="bg-slate-100 p-3 rounded-xl text-slate-500">
+                    <div className="bg-slate-100 p-3 rounded-xl text-slate-500 shrink-0">
                       <BookOpen size={20} />
                     </div>
                     <div>
@@ -125,7 +123,7 @@ export default function FellowStudentDetails() {
                       <p className="text-sm text-slate-500 mt-1">Active Course • Enrolled recently</p>
                     </div>
                   </div>
-                  <button className="text-sm font-medium text-teal-600 hover:text-teal-700 bg-teal-50 px-3 py-1.5 rounded-lg transition-colors">
+                  <button className="text-sm font-semibold text-teal-600 hover:text-teal-700 bg-teal-50 hover:bg-teal-100 px-4 py-2 rounded-xl transition-all w-full sm:w-auto text-center">
                     View Course Details
                   </button>
                 </div>

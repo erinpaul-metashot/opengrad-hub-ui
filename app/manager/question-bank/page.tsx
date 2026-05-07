@@ -13,6 +13,7 @@ import {
   CheckCircle2,
   ListOrdered
 } from 'lucide-react';
+import SubjectSelector from '@/components/SubjectSelector';
 
 const MOCK_QUESTIONS = [
   { id: 1, title: 'What is the powerhouse of the cell?', type: 'MCQ', subject: 'Biology', difficulty: 'Easy', lastUpdated: '2 days ago' },
@@ -24,9 +25,15 @@ const MOCK_QUESTIONS = [
 ];
 
 export default function QuestionBankPage() {
+  const [questions, setQuestions] = useState<any[]>(MOCK_QUESTIONS);
   const [searchTerm, setSearchTerm] = useState('');
+  const [filterSubject, setFilterSubject] = useState('All');
+  const [filterType, setFilterType] = useState('All');
   const [showAddModal, setShowAddModal] = useState(false);
   const [editingQuestion, setEditingQuestion] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [title, setTitle] = useState('');
+  const [subject, setSubject] = useState('');
+  const [difficulty, setDifficulty] = useState('Easy');
   const [questionType, setQuestionType] = useState('MCQ');
   const [options, setOptions] = useState(['', '', '', '']);
   const [correctOption, setCorrectOption] = useState(0);
@@ -35,23 +42,80 @@ export default function QuestionBankPage() {
     { id: Date.now(), title: '', type: 'MCQ', options: ['', '', '', ''], correctOption: 0 }
   ]);
 
-  const filteredQuestions = MOCK_QUESTIONS.filter(q =>
-    q.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    q.subject.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  const filteredQuestions = questions.filter(q => {
+    const matchesSearch = q.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+                          q.subject.toLowerCase().includes(searchTerm.toLowerCase());
+    const matchesSubject = filterSubject === 'All' || q.subject === filterSubject;
+    const matchesType = filterType === 'All' || q.type === filterType;
+    return matchesSearch && matchesSubject && matchesType;
+  });
+
+  const uniqueSubjects = Array.from(new Set(questions.map(q => q.subject))).filter(Boolean);
 
   const handleEdit = (q: any) => { // eslint-disable-line @typescript-eslint/no-explicit-any
     setEditingQuestion(q);
-    setQuestionType(q.type);
+    setTitle(q.title || '');
+    setSubject(q.subject || '');
+    setDifficulty(q.difficulty || 'Easy');
+    setQuestionType(q.type || 'MCQ');
+    if (q.type === 'MCQ') {
+      setOptions(q.options || ['', '', '', '']);
+      setCorrectOption(q.correctOption || 0);
+    } else if (q.type === 'Group') {
+      setPassage(q.passage || '');
+      setSubQuestions(q.subQuestions || [{ id: Date.now(), title: '', type: 'MCQ', options: ['', '', '', ''], correctOption: 0 }]);
+    }
     setShowAddModal(true);
   };
 
   const handleCloseModal = () => {
     setShowAddModal(false);
     setEditingQuestion(null);
+    setTitle('');
+    setSubject('');
+    setDifficulty('Easy');
+    setQuestionType('MCQ');
     setOptions(['', '', '', '']);
+    setCorrectOption(0);
     setPassage('');
     setSubQuestions([{ id: Date.now(), title: '', type: 'MCQ', options: ['', '', '', ''], correctOption: 0 }]);
+  };
+
+  const handleSaveQuestion = () => {
+    if (!title.trim()) {
+      alert('Please enter question content.');
+      return;
+    }
+    if (!subject.trim()) {
+      alert('Please select or create a subject.');
+      return;
+    }
+
+    const questionData = {
+      id: editingQuestion ? editingQuestion.id : Date.now(),
+      title,
+      type: questionType,
+      subject,
+      difficulty,
+      lastUpdated: editingQuestion ? 'Just now' : '1 min ago',
+      options: questionType === 'MCQ' ? options : undefined,
+      correctOption: questionType === 'MCQ' ? correctOption : undefined,
+      passage: questionType === 'Group' ? passage : undefined,
+      subQuestions: questionType === 'Group' ? subQuestions : undefined
+    };
+
+    if (editingQuestion) {
+      setQuestions(prev => prev.map(q => q.id === editingQuestion.id ? questionData : q));
+    } else {
+      setQuestions(prev => [questionData, ...prev]);
+    }
+    handleCloseModal();
+  };
+
+  const handleDelete = (id: number) => {
+    if (confirm('Are you sure you want to delete this question?')) {
+      setQuestions(prev => prev.filter(q => q.id !== id));
+    }
   };
 
   const addSubQuestion = () => {
@@ -104,23 +168,36 @@ export default function QuestionBankPage() {
               className="w-full rounded-xl border border-slate-200 bg-slate-50 py-2.5 pl-10 pr-4 text-sm text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-teal-500 focus:bg-white focus:ring-2 focus:ring-teal-500/20"
             />
           </div>
-          <div className="flex items-center gap-3">
-            <select className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-teal-500 focus:bg-white">
-              <option>Subject: All</option>
-              <option>Mathematics</option>
-              <option>Biology</option>
-              <option>Computer Science</option>
+          <div className="flex flex-wrap items-center gap-3">
+            <select 
+              value={filterSubject}
+              onChange={(e) => setFilterSubject(e.target.value)}
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-teal-500 focus:bg-white font-semibold"
+            >
+              <option value="All">Subject: All</option>
+              {uniqueSubjects.map(subj => (
+                <option key={subj} value={subj}>{subj}</option>
+              ))}
             </select>
-            <select className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-teal-500 focus:bg-white">
-               <option>Type: All</option>
-              <option>MCQ</option>
-              <option>Numerical</option>
-              <option>Fill in the blanks</option>
-              <option>Group</option>
+            <select 
+              value={filterType}
+              onChange={(e) => setFilterType(e.target.value)}
+              className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-teal-500 focus:bg-white font-semibold"
+            >
+              <option value="All">Type: All</option>
+              <option value="MCQ">MCQ</option>
+              <option value="Numerical">Numerical</option>
+              <option value="Fill in the blanks">Fill in the blanks</option>
+              <option value="Group">Group</option>
             </select>
-            <button className="p-2.5 rounded-xl border border-slate-200 text-slate-600 hover:bg-slate-50 transition-colors">
-              <Filter size={18} />
-            </button>
+            {(filterSubject !== 'All' || filterType !== 'All') && (
+              <button 
+                onClick={() => { setFilterSubject('All'); setFilterType('All'); }}
+                className="px-3.5 py-2.5 rounded-xl border border-teal-200 text-teal-600 hover:bg-teal-50 font-bold text-xs transition-colors"
+              >
+                Clear Filters
+              </button>
+            )}
           </div>
         </div>
 
@@ -167,14 +244,17 @@ export default function QuestionBankPage() {
                       </span>
                     </td>
                     <td className="p-4 pr-6 text-right">
-                      <div className="flex items-center justify-end gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center justify-end gap-1 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
                         <button 
                           onClick={() => handleEdit(q)}
                           className="p-2 text-slate-400 hover:text-teal-600 hover:bg-teal-50 rounded-lg transition-colors"
                         >
                           <Edit2 size={16} />
                         </button>
-                        <button className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+                        <button 
+                          onClick={() => handleDelete(q.id)}
+                          className="p-2 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        >
                           <Trash2 size={16} />
                         </button>
                       </div>
@@ -202,22 +282,31 @@ export default function QuestionBankPage() {
             </div>
             <div className="p-6 flex-1 space-y-6">
               <div className="space-y-2">
-                <label className="text-sm font-semibold text-slate-700">Question Content</label>
+                <label className="text-sm font-semibold text-slate-700">Question Content <span className="text-red-500">*</span></label>
                 <textarea 
                   rows={4} 
-                  defaultValue={editingQuestion?.title}
+                  value={title}
+                  onChange={(e) => setTitle(e.target.value)}
                   className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 resize-none" 
                   placeholder="Type your question here..."
                 ></textarea>
               </div>
+
+              <div className="space-y-2">
+                <label className="text-sm font-semibold text-slate-700">Subject <span className="text-red-500">*</span></label>
+                <SubjectSelector 
+                  selectedSubject={subject}
+                  onChange={setSubject}
+                />
+              </div>
               
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-slate-700">Question Type</label>
                   <select 
                     value={questionType}
                     onChange={(e) => setQuestionType(e.target.value)}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 bg-white"
                   >
                      <option value="MCQ">Multiple Choice</option>
                     <option value="Numerical">Numerical</option>
@@ -228,8 +317,9 @@ export default function QuestionBankPage() {
                 <div className="space-y-2">
                   <label className="text-sm font-semibold text-slate-700">Difficulty</label>
                   <select 
-                    defaultValue={editingQuestion?.difficulty || 'Easy'}
-                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20"
+                    value={difficulty}
+                    onChange={(e) => setDifficulty(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 px-4 py-3 text-sm text-slate-900 outline-none focus:border-teal-500 focus:ring-2 focus:ring-teal-500/20 bg-white"
                   >
                     <option>Easy</option>
                     <option>Medium</option>
@@ -322,7 +412,7 @@ export default function QuestionBankPage() {
                             className="w-full rounded-lg border border-slate-200 px-3 py-2 text-sm outline-none focus:border-teal-500"
                           />
                           
-                          <div className="grid grid-cols-2 gap-3">
+                          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <select 
                               value={sq.type}
                               onChange={(e) => updateSubQuestion(sq.id, 'type', e.target.value)}
@@ -388,7 +478,7 @@ export default function QuestionBankPage() {
             </div>
             <div className="p-6 border-t border-slate-100 flex justify-end gap-3 shrink-0 bg-slate-50">
               <button onClick={handleCloseModal} className="px-5 py-2.5 text-sm font-bold text-slate-600 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-colors">Cancel</button>
-              <button onClick={handleCloseModal} className="px-5 py-2.5 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl transition-colors flex items-center gap-2 shadow-md">
+              <button onClick={handleSaveQuestion} className="px-5 py-2.5 text-sm font-bold text-white bg-teal-600 hover:bg-teal-700 rounded-xl transition-colors flex items-center gap-2 shadow-md">
                 <CheckCircle2 size={16} /> {editingQuestion ? 'Update Question' : 'Save Question'}
               </button>
             </div>

@@ -111,7 +111,7 @@ export default function AdminReportsPage() {
               <button
                 key={t}
                 onClick={() => setFilter(t as any)}
-                className={`px-6 py-2 rounded-lg text-sm font-medium transition-all ${
+                className={`flex-1 md:flex-initial px-4 md:px-6 py-2 rounded-lg text-xs md:text-sm font-medium transition-all text-center ${
                   filter === t 
                     ? 'bg-slate-900 text-white shadow-md shadow-slate-200' 
                     : 'text-slate-600 hover:bg-slate-50'
@@ -201,64 +201,64 @@ export default function AdminReportsPage() {
         {selectedReport && (
           <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm animate-in fade-in duration-300">
             <div className="bg-white w-full max-w-2xl rounded-3xl shadow-2xl overflow-hidden animate-in zoom-in-95 duration-300">
-              <div className="px-8 py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
-                <div className="flex items-center gap-4">
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
+              <div className="px-4 sm:px-8 py-4 sm:py-6 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className={`w-9 h-9 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center shrink-0 ${
                     selectedReport.status === 'Resolved' ? 'bg-emerald-100 text-emerald-600' : 'bg-amber-100 text-amber-600'
                   }`}>
                     {getStatusIcon(selectedReport.status)}
                   </div>
                   <div>
-                    <h2 className="text-xl font-bold text-slate-900">{selectedReport.title}</h2>
-                    <p className="text-xs text-slate-500 font-medium">Report ID: {selectedReport.id.toUpperCase()}</p>
+                    <h2 className="text-lg sm:text-xl font-bold text-slate-900 line-clamp-1">{selectedReport.title}</h2>
+                    <p className="text-[10px] sm:text-xs text-slate-500 font-medium">Report ID: {selectedReport.id.toUpperCase()}</p>
                   </div>
                 </div>
                 <button 
                   onClick={() => setSelectedReport(null)}
-                  className="p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-slate-600 shadow-sm"
+                  className="p-1.5 sm:p-2 hover:bg-white rounded-xl transition-all text-slate-400 hover:text-slate-600 shadow-sm"
                 >
-                  <X size={20} />
+                  <X size={18} className="sm:w-5 sm:h-5" />
                 </button>
               </div>
 
-              <div className="p-8 overflow-y-auto max-h-[70vh]">
-                <div className="flex flex-wrap gap-3 mb-8">
-                  <div className={`px-3 py-1 rounded-full text-xs font-bold border ${getPriorityColor(selectedReport.priority)}`}>
+              <div className="p-4 sm:p-8 overflow-y-auto max-h-[70vh] space-y-6">
+                <div className="flex flex-wrap gap-2 sm:gap-3">
+                  <div className={`px-2.5 sm:px-3 py-1 rounded-full text-[10px] sm:text-xs font-bold border ${getPriorityColor(selectedReport.priority)}`}>
                     {selectedReport.priority} Priority
                   </div>
-                  <div className="px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-xs font-bold border border-slate-200">
+                  <div className="px-2.5 sm:px-3 py-1 bg-slate-100 text-slate-600 rounded-full text-[10px] sm:text-xs font-bold border border-slate-200">
                     {selectedReport.type}
                   </div>
-                  <div className="px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-xs font-bold border border-blue-100">
+                  <div className="px-2.5 sm:px-3 py-1 bg-blue-50 text-blue-600 rounded-full text-[10px] sm:text-xs font-bold border border-blue-100">
                     Submitted by {selectedReport.author}
                   </div>
                 </div>
 
                 <div className="space-y-6">
                   <section>
-                    <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Concern Details</h3>
-                    <div className="p-5 bg-slate-50 rounded-2xl border border-slate-200">
-                      <p className="text-slate-700 leading-relaxed text-sm whitespace-pre-wrap">
+                    <h3 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider mb-2.5">Concern Details</h3>
+                    <div className="p-4 sm:p-5 bg-slate-50 rounded-2xl border border-slate-200">
+                      <p className="text-slate-700 leading-relaxed text-xs sm:text-sm whitespace-pre-wrap">
                         {selectedReport.concern}
                       </p>
                     </div>
                   </section>
 
-                  <section className="grid grid-cols-2 gap-6">
+                  <section className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Target Entity</h3>
-                      <div className="flex items-center gap-3 p-4 bg-white border border-slate-200 rounded-xl">
-                        <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center">
+                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider mb-2.5">Target Entity</h3>
+                      <div className="flex items-center gap-3 p-3 sm:p-4 bg-white border border-slate-200 rounded-xl">
+                        <div className="w-8 h-8 rounded-lg bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0">
                           {selectedReport.type === 'Student' ? <User size={16} /> : <SchoolIcon size={16} />}
                         </div>
-                        <span className="text-sm font-bold text-slate-900">{selectedReport.target}</span>
+                        <span className="text-xs sm:text-sm font-bold text-slate-900">{selectedReport.target}</span>
                       </div>
                     </div>
                     <div>
-                      <h3 className="text-sm font-bold text-slate-900 uppercase tracking-wider mb-3">Mentions</h3>
-                      <div className="flex flex-wrap gap-2">
+                      <h3 className="text-xs sm:text-sm font-bold text-slate-900 uppercase tracking-wider mb-2.5">Mentions</h3>
+                      <div className="flex flex-wrap gap-1.5 sm:gap-2">
                         {selectedReport.mentions.map((mention: string) => (
-                          <span key={mention} className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-medium border border-slate-200">
+                          <span key={mention} className="px-2.5 sm:px-3 py-1 sm:py-1.5 bg-slate-100 text-slate-700 rounded-lg text-[10px] sm:text-xs font-medium border border-slate-200">
                             {mention}
                           </span>
                         ))}
@@ -303,17 +303,17 @@ export default function AdminReportsPage() {
                 </div>
               </div>
 
-              <div className="px-8 py-6 bg-slate-50 border-t border-slate-100 flex gap-3">
+              <div className="px-4 sm:px-8 py-4 sm:py-5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row gap-2.5 sm:gap-3">
                 <button 
                   onClick={() => setSelectedReport(null)}
-                  className="flex-1 px-6 py-3 border border-slate-200 rounded-xl font-bold text-slate-600 hover:bg-white transition-all shadow-sm"
+                  className="w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-2.5 border border-slate-200 rounded-xl font-bold text-xs sm:text-sm text-slate-600 bg-white hover:bg-slate-50 transition-all shadow-sm text-center"
                 >
                   Close
                 </button>
                 {selectedReport.status !== 'Resolved' && (
                   <button 
                     onClick={() => handleResolve(selectedReport.id)}
-                    className="flex-1 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold transition-all shadow-lg shadow-emerald-200"
+                    className="w-full sm:flex-1 px-4 sm:px-6 py-2 sm:py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl font-bold text-xs sm:text-sm transition-all shadow-lg shadow-emerald-200 text-center flex items-center justify-center whitespace-nowrap"
                   >
                     Mark as Resolved
                   </button>

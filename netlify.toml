@@ -1,0 +1,8 @@
+# netlify.toml — enable Netlify's Next.js plugin for App Router & SSR routes
+# Do not set `publish` when using the plugin; the plugin determines output.
+
+[[plugins]]
+  package = "@netlify/plugin-nextjs"
+
+[build]
+  command = "npm run build"

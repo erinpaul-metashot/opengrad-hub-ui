@@ -3,6 +3,7 @@
 import React, { ReactNode, useState } from 'react';
 import Sidebar from './Sidebar';
 import Header from './Header';
+import PwaShellPrompt from './PwaShellPrompt';
 import { useRouter } from 'next/navigation';
 
 interface LayoutShellProps {
@@ -95,6 +96,8 @@ export default function LayoutShell({
           onSwitchRole={handleRoleSwitch}
           onMenuToggle={() => setIsMobileSidebarOpen(!isMobileSidebarOpen)}
         />
+
+        <PwaShellPrompt />
 
         {/* Page Content */}
         <main className="page-content">

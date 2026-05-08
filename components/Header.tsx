@@ -54,7 +54,7 @@ export default function Header({
       <div className="header-left">
         <button 
           onClick={onMenuToggle}
-          className="md:hidden p-1.5 -ml-1 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors shrink-0"
+          className="md:hidden -ml-1 flex min-h-11 min-w-11 shrink-0 items-center justify-center rounded-xl text-gray-600 transition-colors hover:bg-gray-100"
           aria-label="Toggle menu"
         >
           <Menu size={20} className="sm:w-[24px] sm:h-[24px]" />
@@ -118,7 +118,7 @@ export default function Header({
 
           {/* Notifications Dropdown */}
           {showNotifications && (
-            <div className="fixed md:absolute left-4 right-4 md:left-auto md:right-0 top-16 md:top-auto mt-2 md:w-80 bg-white rounded-2xl md:rounded-lg shadow-xl border border-gray-200 z-50">
+            <div className="fixed left-4 right-4 top-[calc(4rem+var(--safe-top))] z-50 mt-2 rounded-2xl border border-gray-200 bg-white shadow-xl md:absolute md:left-auto md:right-0 md:top-auto md:mt-2 md:w-80 md:rounded-lg">
               <div className="p-4 border-b border-gray-200">
                 <h3 className="font-semibold text-gray-900">Notifications</h3>
               </div>

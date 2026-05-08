@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { usePathname } from 'next/navigation';
@@ -95,41 +95,26 @@ export default function Sidebar({
   isOpen = false,
   onClose,
 }: SidebarProps) {
-  const [expandedItems, setExpandedItems] = useState<string[]>([]);
+  const [manualExpandedItems, setManualExpandedItems] = useState<string[]>([]);
   const pathname = usePathname();
   const navItems = NAV_ITEMS[role] || NAV_ITEMS.student;
 
-  // Auto-expand parents of active children
-  useEffect(() => {
-    if (!pathname) return;
-    
-    const itemsToExpand: string[] = [];
-    navItems.forEach((item) => {
-      if (item.children) {
-        const hasActiveChild = item.children.some(
-          (child) => child.href && (pathname === child.href || pathname.startsWith(child.href + '/'))
-        );
-        if (hasActiveChild) {
-          itemsToExpand.push(item.label);
-        }
-      }
-    });
+  const autoExpandedItems = navItems
+    .filter((item) =>
+      item.children?.some(
+        (child) =>
+          child.href &&
+          (pathname === child.href || pathname.startsWith(`${child.href}/`))
+      )
+    )
+    .map((item) => item.label);
 
-    if (itemsToExpand.length > 0) {
-      setExpandedItems((prev) => {
-        const newExpanded = [...prev];
-        itemsToExpand.forEach((label) => {
-          if (!newExpanded.includes(label)) {
-            newExpanded.push(label);
-          }
-        });
-        return newExpanded;
-      });
-    }
-  }, [pathname, navItems]);
+  const expandedItems = Array.from(
+    new Set([...manualExpandedItems, ...autoExpandedItems])
+  );
 
   const toggleExpand = (label: string) => {
-    setExpandedItems((prev) =>
+    setManualExpandedItems((prev) =>
       prev.includes(label)
         ? prev.filter((item) => item !== label)
         : [...prev, label]
@@ -228,7 +213,10 @@ export default function Sidebar({
   };
 
   return (
-    <aside className={`sidebar ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}>
+    <aside
+      className={`sidebar ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}`}
+      aria-label="Primary navigation"
+    >
       {/* Logo Section */}
       <div className="sidebar-logo relative">
         <Link href="/">
@@ -246,7 +234,7 @@ export default function Sidebar({
         {onClose && (
           <button 
             onClick={onClose}
-            className="absolute right-4 top-1/2 -translate-y-1/2 md:hidden p-1 text-gray-500 hover:bg-gray-100 rounded-lg transition-colors"
+            className="absolute right-4 top-1/2 flex min-h-11 min-w-11 -translate-y-1/2 items-center justify-center rounded-xl text-gray-500 transition-colors hover:bg-gray-100 md:hidden"
             aria-label="Close sidebar"
           >
             <X size={20} />
